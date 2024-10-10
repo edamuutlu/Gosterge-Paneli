@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+/* index.tsx başlangıç */
+.gosterge-drag-handle {
+  cursor: grab; 
+  background-color: rgba(0, 0, 0, 0.1); 
+  border: 1px solid rgba(0, 0, 0, 0.3); 
+  padding: 8px; 
+  border-radius: 4px; 
+  transition: background-color 0.3s; 
+}
+
+.gosterge-drag-handle:hover {
+  background-color: rgba(0, 0, 0, 0.2); 
+}
+
+.gosterge-drag-handle:active {
+  cursor: grabbing; 
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.spin{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.grid-linechart{
+  margin-bottom: 10px;
+}
+/* index.tsx bitiş */
+
+
+/* GostergeKonteyner başlangıç */
+.ust-container{
+  display: flex;
+  align-items: center;
+}
+.ust-baslik{
+  flex: 1;
+  padding: 4px;
+  cursor: grab;
+}
+
+.gosterge-butonlar{
+  min-height: 25px;
+}
+
+.gosterge-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border: 1px solid rgb(199, 196, 196);
+  border-radius: 4px;
+}
+
+.gosterge-baslik{
+  margin: 8px 5px;
+}
+
+.gosterge-ust{
+  padding: 2px 4px;
+}
+
+.gosterge-icerik{
+  display: flex;
+  direction: 1;
+  overflow: auto; /* auto */
+}
+
+.gosterge-icerik-item {
+  padding: 8px;
+  height: 100%;
+  width: 100%;
+}
+/* GostergeKonteyner bitiş */
