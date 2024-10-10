@@ -27,6 +27,8 @@ const GostergeKonteyner = ({
   const [gostergeNode, setGostergeNode] = useState<ReactNode>(<GostergeYukleyici />);
   const [duzenlenenDurum, setDuzenlenenDurum] = useState<any>();
 
+  const MINIMUM_YUKSEKLIK = 300; 
+
   useEffect(() => {
     const getDurum = async () => {
       if (gosterge.gostergeId && gosterge.getDuzenle) {
@@ -41,18 +43,18 @@ const GostergeKonteyner = ({
               setBaslik(gosterge.getBaslik(parsedDurum));
             }
             setGostergeNode(
-              gosterge.getNode(suAnkiDurum.current, null, yukseklik)
+              gosterge.getNode(suAnkiDurum.current, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
             );
             setDuzenlenenDurum(suAnkiDurum.current);
           } else {
             setGostergeNode(
-              gosterge.getNode(gosterge.varsayilanDurum, null, yukseklik)
+              gosterge.getNode(gosterge.varsayilanDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
             );
           }
         } catch (error) {
           message.error('Gösterge ayar yüklenemedi');
           setGostergeNode(
-            gosterge.getNode(gosterge.varsayilanDurum, null, yukseklik)
+            gosterge.getNode(gosterge.varsayilanDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
           );
         }
       }
@@ -62,7 +64,7 @@ const GostergeKonteyner = ({
 
   useEffect(() => {
     if (duzenleniyor) {
-      setGostergeNode(gosterge.getNode(duzenlenenDurum, null, yukseklik));
+      setGostergeNode(gosterge.getNode(duzenlenenDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK)));
     }
   }, [yukseklik, duzenlenenDurum, duzenleniyor, gosterge]);
 
@@ -138,7 +140,7 @@ const GostergeKonteyner = ({
       <div className="gosterge-icerik">
         <div className="gosterge-icerik-item">
           <Card
-            style={{ height: (yukseklik ?? 0) - 100 }}
+            style={{ height: Math.max((yukseklik ?? 0) - 100, MINIMUM_YUKSEKLIK - 100) }}
             title={gosterge.isim}
           >
             {node}
