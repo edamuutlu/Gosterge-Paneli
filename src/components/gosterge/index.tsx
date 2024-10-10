@@ -98,7 +98,7 @@ const GostergePaneli = ({ gostergeler }: Props) => {
         draggableHandle={`.${dragHandleSinifAdi}`}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 }}
-        rowHeight={250}
+        rowHeight={150}
       >
         {gostergeler.map((x, indis) => (
           <div
