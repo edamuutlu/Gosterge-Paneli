@@ -25,7 +25,7 @@ const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layout
   }, [gostergeler]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(calculateHeights, 500);
+    const timeoutId = setTimeout(calculateHeights, 100);
 
     observerRef.current = new ResizeObserver(calculateHeights);
 

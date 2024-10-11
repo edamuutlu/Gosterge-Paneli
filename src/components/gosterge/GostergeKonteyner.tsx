@@ -137,7 +137,7 @@ const GostergeKonteyner = ({
       )}
       <div className="gosterge-ust">{ustKisim}</div>
       <Divider style={{margin:0}}/>
-      <div className="gosterge-icerik">
+      <div className={(yukseklik ?? 0) > 650 ? "gosterge-icerik-hidden":"gosterge-icerik"}>
         <div className="gosterge-icerik-item">
           <Card
             style={{ height: Math.max((yukseklik ?? 0) - 100, MINIMUM_YUKSEKLIK - 100) }}

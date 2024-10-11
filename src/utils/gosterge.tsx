@@ -1,17 +1,19 @@
-import { Input, Typography, Select } from "antd";
+import { Input, Typography, Select, Alert } from "antd";
 import { LineChart, BarChart, AreaChart, Line, Bar, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { AiOutlineLineChart, AiOutlineBarChart, AiOutlineAreaChart } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { IGosterge, IGostergeDuzenleProps, varsayilanGostergeLayout } from "../components/gosterge/IGosterge";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const rastgeleVeriUret = (adet: number) => 
-  Array.from({ length: adet }, (_, index) => ({
+const rastgeleVeriUret = (adet: number) => {
+  return Array.from({ length: adet }, (_, index) => ({
     isim: `Gün ${index + 1}`,
     deger: Math.floor(Math.random() * 100),
     deger2: Math.floor(Math.random() * 100),
   }));
+};
 
 type GrafikTipi = 'line' | 'bar' | 'area';
 
@@ -23,7 +25,7 @@ const GrafikBilesenleri = {
 
 const grafikGetir = (tip: GrafikTipi, veri: any[], veriAnahtari: string, renk: string) => {
   const GrafikBileseni = GrafikBilesenleri[tip];
-  
+
   const veriBileseniGetir = () => {
     switch (tip) {
       case 'line':
@@ -36,6 +38,10 @@ const grafikGetir = (tip: GrafikTipi, veri: any[], veriAnahtari: string, renk: s
         return null;
     }
   };
+
+  if (!veri || veri.length === 0 || !veri[0].isim) {
+    return <Alert message="Hata" description="Veri yüklenirken bir hata oluştu." type="error" showIcon />;
+  }
 
   return (
     <GrafikBileseni data={veri}>
@@ -57,9 +63,7 @@ interface GostergeDurum {
 
 const varsayilanGostergeAyarlar = {
   getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
-    <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
-      {grafikGetir(durum.grafikTipi, rastgeleVeriUret(durum.gunSayisi), durum.veriAnahtari, "#82ca9d")}
-    </ResponsiveContainer>
+    <GostergeComponent durum={durum} yukseklik={yukseklik} />
   ),
   varsayilanDurum: { gunSayisi: 7, grafikTipi: "line" as GrafikTipi, veriAnahtari: "deger" },
   varsayilanBaslik: (isim: string) => (
@@ -112,6 +116,21 @@ const varsayilanGostergeAyarlar = {
   },
 };
 
+const GostergeComponent = ({ durum, yukseklik }: { durum: GostergeDurum; yukseklik?: number }) => {
+  const [veri, setVeri] = useState<{ isim: string; deger: number; deger2: number; }[]>([]);
+
+  useEffect(() => {
+    const initialData = rastgeleVeriUret(durum.gunSayisi);
+    setVeri(initialData);
+  }, [durum.gunSayisi]);
+
+  return (
+    <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
+      {grafikGetir(durum.grafikTipi, veri, durum.veriAnahtari, "#82ca9d")}
+    </ResponsiveContainer>
+  );
+};
+
 const gostergeOlustur = (id: string, isim: string, x: number, y: number, ayarlar: Partial<typeof varsayilanGostergeAyarlar> = {}): IGosterge<GostergeDurum> => ({
   gostergeId: id,
   isim,
@@ -121,7 +140,7 @@ const gostergeOlustur = (id: string, isim: string, x: number, y: number, ayarlar
   getBaslik: (durum: GostergeDurum) => varsayilanGostergeAyarlar.getBaslik(isim, durum),
 });
 
-export const gosterge: IGosterge<GostergeDurum>[] = Array.from({ length: 100 }, (_, index) => {
+export const gosterge: IGosterge<GostergeDurum>[] = Array.from({ length: 2 }, (_, index) => {
   const satir = Math.floor(index / 5);
   const sutun = index % 5;
   return gostergeOlustur(
