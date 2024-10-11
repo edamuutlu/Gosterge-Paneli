@@ -17,11 +17,11 @@ const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layout
   const observerRef = useRef<ResizeObserver | null>(null);
 
   const calculateHeights = useCallback(() => {
-    const newYukseklikler = gostergeler.map(gosterge => {
+    const yeniYukseklikler = gostergeler.map(gosterge => {
       const element = document.getElementsByClassName(gosterge.gostergeId || '')[0] as HTMLElement;
       return element ? parseFloat(getComputedStyle(element).height) : null;
     });
-    setYukseklikler(newYukseklikler);
+    setYukseklikler(yeniYukseklikler);
   }, [gostergeler]);
 
   useEffect(() => {
