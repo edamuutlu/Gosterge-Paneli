@@ -6,70 +6,69 @@ import { IGosterge, IGostergeDuzenleProps, varsayilanGostergeLayout } from "../c
 const { Title } = Typography;
 const { Option } = Select;
 
-const generateRandomData = (count: number) => 
-  Array.from({ length: count }, (_, index) => ({
-    name: `Gün ${index + 1}`,
+const rastgeleVeriUret = (adet: number) => 
+  Array.from({ length: adet }, (_, index) => ({
+    isim: `Gün ${index + 1}`,
     deger: Math.floor(Math.random() * 100),
     deger2: Math.floor(Math.random() * 100),
   }));
 
-type ChartType = 'line' | 'bar' | 'area';
+type GrafikTipi = 'line' | 'bar' | 'area';
 
-const ChartComponents = {
+const GrafikBilesenleri = {
   line: LineChart,
   bar: BarChart,
   area: AreaChart,
 } as const;
 
-const getChart = (type: ChartType, data: any[], dataKey: string, color: string) => {
-  const ChartComponent = ChartComponents[type];
+const grafikGetir = (tip: GrafikTipi, veri: any[], veriAnahtari: string, renk: string) => {
+  const GrafikBileseni = GrafikBilesenleri[tip];
   
-  // Ensure correct component usage
-  const renderDataComponent = () => {
-    switch (type) {
+  const veriBileseniGetir = () => {
+    switch (tip) {
       case 'line':
-        return <Line type="monotone" dataKey={dataKey} stroke={color} />;
+        return <Line type="monotone" dataKey={veriAnahtari} stroke={renk} />;
       case 'bar':
-        return <Bar dataKey={dataKey} fill={color} />;
+        return <Bar dataKey={veriAnahtari} fill={renk} />;
       case 'area':
-        return <Area type="monotone" dataKey={dataKey} stroke={color} fill={color} />;
+        return <Area type="monotone" dataKey={veriAnahtari} stroke={renk} fill={renk} />;
       default:
         return null;
     }
   };
 
   return (
-    <ChartComponent data={data}>
+    <GrafikBileseni data={veri}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
+      <XAxis dataKey="isim" />
       <YAxis />
       <Tooltip />
       <Legend />
-      {renderDataComponent()}
-    </ChartComponent>
+      {veriBileseniGetir()}
+    </GrafikBileseni>
   );
 };
 
-interface GaugeDurum {
+interface GostergeDurum {
   gunSayisi: number;
-  grafikTipi: ChartType;
+  grafikTipi: GrafikTipi;
   veriAnahtari: string;
 }
 
-const defaultGaugeConfig = {
-  getNode: (durum: GaugeDurum, oncekiDurum?: any, yukseklik?: number) => (
+const varsayilanGostergeAyarlar = {
+  getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
     <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
-      {getChart(durum.grafikTipi, generateRandomData(durum.gunSayisi), durum.veriAnahtari, "#82ca9d")}
+      {grafikGetir(durum.grafikTipi, rastgeleVeriUret(durum.gunSayisi), durum.veriAnahtari, "#82ca9d")}
     </ResponsiveContainer>
   ),
-  varsayilanDurum: { gunSayisi: 7, grafikTipi: "line" as ChartType, veriAnahtari: "deger" },
+  varsayilanDurum: { gunSayisi: 7, grafikTipi: "line" as GrafikTipi, veriAnahtari: "deger" },
   varsayilanBaslik: (isim: string) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <AiOutlineLineChart style={{ marginRight: 8 }} /> {isim}
     </div>
   ),
   varsayilanLayout: { ...varsayilanGostergeLayout, w: 6, h: 4 },
-  getDuzenle: ({ durum, setDurum }: IGostergeDuzenleProps<GaugeDurum>) => (
+  getDuzenle: ({ durum, setDurum }: IGostergeDuzenleProps<GostergeDurum>) => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <div>
         <Title level={5}>Gün Sayısı</Title>
@@ -83,7 +82,7 @@ const defaultGaugeConfig = {
         <Title level={5}>Grafik Tipi</Title>
         <Select
           value={durum.grafikTipi}
-          onChange={(value: ChartType) => setDurum({ ...durum, grafikTipi: value })}
+          onChange={(value: GrafikTipi) => setDurum({ ...durum, grafikTipi: value })}
         >
           <Option value="line">Çizgi Grafik</Option>
           <Option value="bar">Çubuk Grafik</Option>
@@ -102,38 +101,38 @@ const defaultGaugeConfig = {
       </div>
     </div>
   ),
-  getBaslik: (isim: string, durum: GaugeDurum) => {
-    const Icon = durum.grafikTipi === "bar" ? AiOutlineBarChart : 
+  getBaslik: (isim: string, durum: GostergeDurum) => {
+    const Ikon = durum.grafikTipi === "bar" ? AiOutlineBarChart : 
                  durum.grafikTipi === "area" ? AiOutlineAreaChart : AiOutlineLineChart;
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Icon style={{ marginRight: 8 }} /> {isim} ({durum.gunSayisi} gün, {durum.grafikTipi})
+        <Ikon style={{ marginRight: 8 }} /> {isim} ({durum.gunSayisi} gün, {durum.grafikTipi})
       </div>
     );
   },
 };
 
-const createGauge = (id: string, isim: string, x: number, y: number, config: Partial<typeof defaultGaugeConfig> = {}): IGosterge<GaugeDurum> => ({
+const gostergeOlustur = (id: string, isim: string, x: number, y: number, ayarlar: Partial<typeof varsayilanGostergeAyarlar> = {}): IGosterge<GostergeDurum> => ({
   gostergeId: id,
   isim,
-  ...{ ...defaultGaugeConfig, ...config },
-  varsayilanBaslik: defaultGaugeConfig.varsayilanBaslik(isim),
-  varsayilanLayout: { ...defaultGaugeConfig.varsayilanLayout, ...config.varsayilanLayout, i: id, x, y },
-  getBaslik: (durum: GaugeDurum) => defaultGaugeConfig.getBaslik(isim, durum),
+  ...{ ...varsayilanGostergeAyarlar, ...ayarlar },
+  varsayilanBaslik: varsayilanGostergeAyarlar.varsayilanBaslik(isim),
+  varsayilanLayout: { ...varsayilanGostergeAyarlar.varsayilanLayout, ...ayarlar.varsayilanLayout, i: id, x, y },
+  getBaslik: (durum: GostergeDurum) => varsayilanGostergeAyarlar.getBaslik(isim, durum),
 });
 
-export const gosterge: IGosterge<GaugeDurum>[] = Array.from({ length: 100 }, (_, index) => {
-  const row = Math.floor(index / 5);
-  const col = index % 5;
-  return createGauge(
+export const gosterge: IGosterge<GostergeDurum>[] = Array.from({ length: 100 }, (_, index) => {
+  const satir = Math.floor(index / 5);
+  const sutun = index % 5;
+  return gostergeOlustur(
     `gosterge${index + 1}`,
     `Gösterge ${index + 1}`,
-    col * 6,
-    row * 4,
+    sutun * 6,
+    satir * 4,
     {
       varsayilanDurum: { 
         gunSayisi: 7 + (index % 8), 
-        grafikTipi: ["line", "bar", "area"][index % 3] as ChartType, 
+        grafikTipi: ["line", "bar", "area"][index % 3] as GrafikTipi, 
         veriAnahtari: index % 2 === 0 ? "deger" : "deger2" 
       },
     }
