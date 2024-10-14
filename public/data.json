@@ -1,0 +1,67 @@
+[
+    {
+      "isim": "Gösterge 1",
+      "gunSayisi": 7, 
+      "grafikTipi": "line",
+      "veriAnahtari": "deger",
+      "degerler": [
+        {"isim": "Gün 1", "deger": 10, "deger2": 20},
+        {"isim": "Gün 2", "deger": 30, "deger2": 40},
+        {"isim": "Gün 3", "deger": 20, "deger2": 30},
+        {"isim": "Gün 4", "deger": 40, "deger2": 50},
+        {"isim": "Gün 5", "deger": 15, "deger2": 25},
+        {"isim": "Gün 6", "deger": 35, "deger2": 45},
+        {"isim": "Gün 7", "deger": 25, "deger2": 35}
+      ]
+    },
+    {
+      "isim": "Gösterge 2",
+      "gunSayisi": 8,
+      "grafikTipi": "bar",
+      "veriAnahtari": "deger2",
+      "degerler": [
+        {"isim": "Gün 1", "deger": 15, "deger2": 25},
+        {"isim": "Gün 2", "deger": 35, "deger2": 45},
+        {"isim": "Gün 3", "deger": 25, "deger2": 35},
+        {"isim": "Gün 4", "deger": 45, "deger2": 55},
+        {"isim": "Gün 5", "deger": 20, "deger2": 30},
+        {"isim": "Gün 6", "deger": 40, "deger2": 50},
+        {"isim": "Gün 7", "deger": 30, "deger2": 40},
+        {"isim": "Gün 8", "deger": 50, "deger2": 60}
+      ]
+    },
+    {
+      "isim": "Gösterge 3",
+      "gunSayisi": 9,
+      "grafikTipi": "area",
+      "veriAnahtari": "deger",
+      "degerler": [
+        {"isim": "Gün 1", "deger": 20, "deger2": 30},
+        {"isim": "Gün 2", "deger": 40, "deger2": 50},
+        {"isim": "Gün 3", "deger": 30, "deger2": 40},
+        {"isim": "Gün 4", "deger": 50, "deger2": 60},
+        {"isim": "Gün 5", "deger": 25, "deger2": 35},
+        {"isim": "Gün 6", "deger": 45, "deger2": 55},
+        {"isim": "Gün 7", "deger": 35, "deger2": 45},
+        {"isim": "Gün 8", "deger": 55, "deger2": 65},
+        {"isim": "Gün 9", "deger": 40, "deger2": 50}
+      ]
+    },{
+      "isim": "Gösterge 4",
+      "gunSayisi": 10,
+      "grafikTipi": "area",
+      "veriAnahtari": "deger2",
+      "degerler": [
+        {"isim": "Gün 1", "deger": 20, "deger2": 30},
+        {"isim": "Gün 2", "deger": 40, "deger2": 50},
+        {"isim": "Gün 3", "deger": 30, "deger2": 40},
+        {"isim": "Gün 4", "deger": 50, "deger2": 60},
+        {"isim": "Gün 5", "deger": 25, "deger2": 35},
+        {"isim": "Gün 6", "deger": 45, "deger2": 55},
+        {"isim": "Gün 7", "deger": 35, "deger2": 45},
+        {"isim": "Gün 8", "deger": 55, "deger2": 65},
+        {"isim": "Gün 9", "deger": 40, "deger2": 50},
+        {"isim": "Gün 10", "deger": 55, "deger2": 65}
+      ]
+    }
+  ]

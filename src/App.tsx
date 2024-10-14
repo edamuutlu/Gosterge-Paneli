@@ -1,10 +1,22 @@
+import React from 'react';
 import GostergePaneli from './components/gosterge/';
-import { gosterge } from './utils/gosterge';
+import { useGosterge } from './utils/gosterge';
 import "/node_modules/react-grid-layout/css/styles.css"
 import "/node_modules/react-resizable/css/styles.css"
+import { Spin } from 'antd';
 
-const App = () => {
-  return <GostergePaneli gostergeler={gosterge} />;
+const App: React.FC = () => {
+  const { gostergeler, isLoading } = useGosterge();
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  return <GostergePaneli gostergeler={gostergeler} />;
 };
 
-export default App; 
+export default App;

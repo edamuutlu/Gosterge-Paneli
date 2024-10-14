@@ -1,4 +1,4 @@
-import { Input, Typography, Select, Alert } from "antd";
+import { Typography, Select, Alert } from "antd";
 import { LineChart, BarChart, AreaChart, Line, Bar, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { AiOutlineLineChart, AiOutlineBarChart, AiOutlineAreaChart } from "react-icons/ai";
 import { useEffect, useState } from "react";
@@ -7,13 +7,13 @@ import { IGosterge, IGostergeDuzenleProps, varsayilanGostergeLayout } from "../c
 const { Title } = Typography;
 const { Option } = Select;
 
-const rastgeleVeriUret = (adet: number) => {
-  return Array.from({ length: adet }, (_, index) => ({
-    isim: `Gün ${index + 1}`,
-    deger: Math.floor(Math.random() * 100),
-    deger2: Math.floor(Math.random() * 100),
-  }));
-};
+interface GostergeDurum {
+  isim: string;
+  gunSayisi: number;
+  grafikTipi: GrafikTipi;
+  veriAnahtari: string;
+  degerler: { isim: string; deger: number; deger2: number; }[];
+}
 
 type GrafikTipi = 'line' | 'bar' | 'area';
 
@@ -55,17 +55,11 @@ const grafikGetir = (tip: GrafikTipi, veri: any[], veriAnahtari: string, renk: s
   );
 };
 
-interface GostergeDurum {
-  gunSayisi: number;
-  grafikTipi: GrafikTipi;
-  veriAnahtari: string;
-}
-
 const varsayilanGostergeAyarlar = {
   getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
-    <GostergeComponent durum={durum} yukseklik={yukseklik} />
+    <GostergeComponent durum={durum}  yukseklik={yukseklik} />
   ),
-  varsayilanDurum: { gunSayisi: 7, grafikTipi: "line" as GrafikTipi, veriAnahtari: "deger" },
+  varsayilanDurum: { isim: "", gunSayisi: 7, grafikTipi: "line" as GrafikTipi, veriAnahtari: "deger", degerler: [] },
   varsayilanBaslik: (isim: string) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <AiOutlineLineChart style={{ marginRight: 8 }} /> {isim}
@@ -74,14 +68,14 @@ const varsayilanGostergeAyarlar = {
   varsayilanLayout: { ...varsayilanGostergeLayout, w: 6, h: 4 },
   getDuzenle: ({ durum, setDurum }: IGostergeDuzenleProps<GostergeDurum>) => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-      <div>
+      {/* <div>
         <Title level={5}>Gün Sayısı</Title>
         <Input
           type="number"
           value={durum.gunSayisi}
           onChange={(e) => setDurum({ ...durum, gunSayisi: parseInt(e.target.value) })}
         />
-      </div>
+      </div> */}
       <div>
         <Title level={5}>Grafik Tipi</Title>
         <Select
@@ -116,44 +110,75 @@ const varsayilanGostergeAyarlar = {
   },
 };
 
-const GostergeComponent = ({ durum, yukseklik }: { durum: GostergeDurum; yukseklik?: number }) => {
-  const [veri, setVeri] = useState<{ isim: string; deger: number; deger2: number; }[]>([]);
-
-  useEffect(() => {
-    const initialData = rastgeleVeriUret(durum.gunSayisi);
-    setVeri(initialData);
-  }, [durum.gunSayisi]);
+const GostergeComponent = ({ durum, yukseklik }: { durum: GostergeDurum; yukseklik?: number }) => {  
+  if (!durum.degerler || durum.degerler.length === 0) {
+    return <Alert message="Hata" description="Veri bulunamadı." type="error" showIcon />;
+  }
 
   return (
     <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
-      {grafikGetir(durum.grafikTipi, veri, durum.veriAnahtari, "#82ca9d")}
+      {grafikGetir(durum.grafikTipi, durum.degerler, durum.veriAnahtari, "#82ca9d")}
     </ResponsiveContainer>
   );
 };
 
-const gostergeOlustur = (id: string, isim: string, x: number, y: number, ayarlar: Partial<typeof varsayilanGostergeAyarlar> = {}): IGosterge<GostergeDurum> => ({
-  gostergeId: id,
-  isim,
-  ...{ ...varsayilanGostergeAyarlar, ...ayarlar },
-  varsayilanBaslik: varsayilanGostergeAyarlar.varsayilanBaslik(isim),
-  varsayilanLayout: { ...varsayilanGostergeAyarlar.varsayilanLayout, ...ayarlar.varsayilanLayout, i: id, x, y },
-  getBaslik: (durum: GostergeDurum) => varsayilanGostergeAyarlar.getBaslik(isim, durum),
+const gostergeOlustur = (gosterge: GostergeDurum, index: number): IGosterge<GostergeDurum> => ({
+  gostergeId: `gosterge${index + 1}`,
+  isim: gosterge.isim,
+  ...varsayilanGostergeAyarlar,
+  varsayilanBaslik: varsayilanGostergeAyarlar.varsayilanBaslik(gosterge.isim),
+  varsayilanLayout: { 
+    ...varsayilanGostergeAyarlar.varsayilanLayout, 
+    i: `gosterge${index + 1}`, 
+    x: (index % 5) * 6, 
+    y: Math.floor(index / 5) * 4 
+  },
+  getBaslik: (durum: GostergeDurum) => varsayilanGostergeAyarlar.getBaslik(gosterge.isim, durum),
+  varsayilanDurum: gosterge,
+  getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
+    <GostergeComponent durum={gosterge}  yukseklik={yukseklik} />
+  )
 });
 
-export const gosterge: IGosterge<GostergeDurum>[] = Array.from({ length: 2 }, (_, index) => {
-  const satir = Math.floor(index / 5);
-  const sutun = index % 5;
-  return gostergeOlustur(
-    `gosterge${index + 1}`,
-    `Gösterge ${index + 1}`,
-    sutun * 6,
-    satir * 4,
-    {
-      varsayilanDurum: { 
-        gunSayisi: 7 + (index % 8), 
-        grafikTipi: ["line", "bar", "area"][index % 3] as GrafikTipi, 
-        veriAnahtari: index % 2 === 0 ? "deger" : "deger2" 
-      },
+const fetchData = async (): Promise<GostergeDurum[]> => {
+  try {
+    const response = await fetch('/data.json');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-  );
-});
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
+};
+
+export const useGosterge = () => {
+  const [gosterge, setGosterge] = useState<IGosterge<GostergeDurum>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchData();
+        const newGosterge = data.map((item, index) => {
+          const gostergeItem = gostergeOlustur(item, index);
+          gostergeItem.varsayilanDurum = {
+            ...gostergeItem.varsayilanDurum,
+            degerler: item.degerler || [],
+          };
+          return gostergeItem;
+        });
+        setGosterge(newGosterge);
+      } catch (error) {
+        console.error('Error loading gösterge data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+  return { gostergeler: gosterge, isLoading };
+};
