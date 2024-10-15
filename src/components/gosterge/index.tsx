@@ -16,7 +16,7 @@ const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layout
   const [yukseklikler, setYukseklikler] = useState<(number | null)[]>([]);
   const observerRef = useRef<ResizeObserver | null>(null);
 
-  const calculateHeights = useCallback(() => {
+  const yukseklikHesapla = useCallback(() => {
     const yeniYukseklikler = gostergeler.map(gosterge => {
       const element = document.getElementsByClassName(gosterge.gostergeId || '')[0] as HTMLElement;
       return element ? parseFloat(getComputedStyle(element).height) : null;
@@ -25,9 +25,9 @@ const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layout
   }, [gostergeler]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(calculateHeights, 100);
+    const timeoutId = setTimeout(yukseklikHesapla, 100);
 
-    observerRef.current = new ResizeObserver(calculateHeights);
+    observerRef.current = new ResizeObserver(yukseklikHesapla);
 
     gostergeler.forEach(gosterge => {
       const element = document.getElementsByClassName(gosterge.gostergeId || '')[0];
@@ -38,13 +38,13 @@ const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layout
       clearTimeout(timeoutId);
       observerRef.current?.disconnect();
     };
-  }, [gostergeler, calculateHeights]);
+  }, [gostergeler, yukseklikHesapla]);
 
   useEffect(() => {
     if (layouts) {
-      calculateHeights();
+      yukseklikHesapla();
     }
-  }, [layouts, calculateHeights]);
+  }, [layouts, yukseklikHesapla]);
 
   return yukseklikler;
 };

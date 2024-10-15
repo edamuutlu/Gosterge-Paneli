@@ -6,9 +6,9 @@ import "/node_modules/react-resizable/css/styles.css"
 import { Spin } from 'antd';
 
 const App: React.FC = () => {
-  const { gostergeler, isLoading } = useGosterge();
+  const { gostergeler, yukleniyor } = useGosterge();
 
-  if (isLoading) {
+  if (yukleniyor) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <Spin size="large" />

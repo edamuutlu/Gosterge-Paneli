@@ -7,6 +7,8 @@ import { IGosterge, IGostergeDuzenleProps, varsayilanGostergeLayout } from "../c
 const { Title } = Typography;
 const { Option } = Select;
 
+type GrafikTipi = 'line' | 'bar' | 'area';
+
 interface GostergeDurum {
   isim: string;
   gunSayisi: number;
@@ -14,8 +16,6 @@ interface GostergeDurum {
   veriAnahtari: string;
   degerler: { isim: string; deger: number; deger2: number; }[];
 }
-
-type GrafikTipi = 'line' | 'bar' | 'area';
 
 const GrafikBilesenleri = {
   line: LineChart,
@@ -52,6 +52,18 @@ const grafikGetir = (tip: GrafikTipi, veri: any[], veriAnahtari: string, renk: s
       <Legend />
       {veriBileseniGetir()}
     </GrafikBileseni>
+  );
+};
+
+const GostergeComponent = ({ durum, yukseklik }: { durum: GostergeDurum; yukseklik?: number }) => {  
+  if (!durum.degerler || durum.degerler.length === 0) {
+    return <Alert message="Hata" description="Veri bulunamadı." type="error" showIcon />;
+  }
+
+  return (
+    <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
+      {grafikGetir(durum.grafikTipi, durum.degerler, durum.veriAnahtari, "#82ca9d")}
+    </ResponsiveContainer>
   );
 };
 
@@ -104,22 +116,10 @@ const varsayilanGostergeAyarlar = {
                  durum.grafikTipi === "area" ? AiOutlineAreaChart : AiOutlineLineChart;
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Ikon style={{ marginRight: 8 }} /> {isim} ({durum.gunSayisi} gün, {durum.grafikTipi})
+        <Ikon style={{ width:18, height:18, marginRight:6 }} /> {isim} ({durum.gunSayisi} gün, {durum.grafikTipi})
       </div>
     );
   },
-};
-
-const GostergeComponent = ({ durum, yukseklik }: { durum: GostergeDurum; yukseklik?: number }) => {  
-  if (!durum.degerler || durum.degerler.length === 0) {
-    return <Alert message="Hata" description="Veri bulunamadı." type="error" showIcon />;
-  }
-
-  return (
-    <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
-      {grafikGetir(durum.grafikTipi, durum.degerler, durum.veriAnahtari, "#82ca9d")}
-    </ResponsiveContainer>
-  );
 };
 
 const gostergeOlustur = (gosterge: GostergeDurum, index: number): IGosterge<GostergeDurum> => ({
@@ -155,12 +155,12 @@ const fetchData = async (): Promise<GostergeDurum[]> => {
 
 export const useGosterge = () => {
   const [gosterge, setGosterge] = useState<IGosterge<GostergeDurum>[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [yukleniyor, setYukleniyor] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setIsLoading(true);
+        setYukleniyor(true);
         const data = await fetchData();
         const newGosterge = data.map((item, index) => {
           const gostergeItem = gostergeOlustur(item, index);
@@ -174,11 +174,11 @@ export const useGosterge = () => {
       } catch (error) {
         console.error('Error loading gösterge data:', error);
       } finally {
-        setIsLoading(false);
+        setYukleniyor(false);
       }
     };
 
     loadData();
   }, []);
-  return { gostergeler: gosterge, isLoading };
+  return { gostergeler: gosterge, yukleniyor };
 };
