@@ -1,67 +1,55 @@
 [
-    {
-      "isim": "Gösterge 1",
-      "gunSayisi": 7, 
-      "grafikTipi": "line",
-      "veriAnahtari": "deger",
-      "degerler": [
-        {"isim": "Gün 1", "deger": 10, "deger2": 20},
-        {"isim": "Gün 2", "deger": 30, "deger2": 40},
-        {"isim": "Gün 3", "deger": 20, "deger2": 30},
-        {"isim": "Gün 4", "deger": 40, "deger2": 50},
-        {"isim": "Gün 5", "deger": 15, "deger2": 25},
-        {"isim": "Gün 6", "deger": 35, "deger2": 45},
-        {"isim": "Gün 7", "deger": 25, "deger2": 35}
-      ]
-    },
-    {
-      "isim": "Gösterge 2",
-      "gunSayisi": 8,
-      "grafikTipi": "bar",
-      "veriAnahtari": "deger2",
-      "degerler": [
-        {"isim": "Gün 1", "deger": 15, "deger2": 25},
-        {"isim": "Gün 2", "deger": 35, "deger2": 45},
-        {"isim": "Gün 3", "deger": 25, "deger2": 35},
-        {"isim": "Gün 4", "deger": 45, "deger2": 55},
-        {"isim": "Gün 5", "deger": 20, "deger2": 30},
-        {"isim": "Gün 6", "deger": 40, "deger2": 50},
-        {"isim": "Gün 7", "deger": 30, "deger2": 40},
-        {"isim": "Gün 8", "deger": 50, "deger2": 60}
-      ]
-    },
-    {
-      "isim": "Gösterge 3",
-      "gunSayisi": 9,
-      "grafikTipi": "area",
-      "veriAnahtari": "deger",
-      "degerler": [
-        {"isim": "Gün 1", "deger": 20, "deger2": 30},
-        {"isim": "Gün 2", "deger": 40, "deger2": 50},
-        {"isim": "Gün 3", "deger": 30, "deger2": 40},
-        {"isim": "Gün 4", "deger": 50, "deger2": 60},
-        {"isim": "Gün 5", "deger": 25, "deger2": 35},
-        {"isim": "Gün 6", "deger": 45, "deger2": 55},
-        {"isim": "Gün 7", "deger": 35, "deger2": 45},
-        {"isim": "Gün 8", "deger": 55, "deger2": 65},
-        {"isim": "Gün 9", "deger": 40, "deger2": 50}
-      ]
-    },{
-      "isim": "Gösterge 4",
-      "gunSayisi": 10,
-      "grafikTipi": "area",
-      "veriAnahtari": "deger2",
-      "degerler": [
-        {"isim": "Gün 1", "deger": 20, "deger2": 30},
-        {"isim": "Gün 2", "deger": 40, "deger2": 50},
-        {"isim": "Gün 3", "deger": 30, "deger2": 40},
-        {"isim": "Gün 4", "deger": 50, "deger2": 60},
-        {"isim": "Gün 5", "deger": 25, "deger2": 35},
-        {"isim": "Gün 6", "deger": 45, "deger2": 55},
-        {"isim": "Gün 7", "deger": 35, "deger2": 45},
-        {"isim": "Gün 8", "deger": 55, "deger2": 65},
-        {"isim": "Gün 9", "deger": 40, "deger2": 50},
-        {"isim": "Gün 10", "deger": 55, "deger2": 65}
-      ]
-    }
-  ]
+  {
+    "isim": "Aylık Satışlar",
+    "grafikTipi": "bar",
+    "veriAnahtari": "satisMiktari",
+    "tur": "object",
+    "degerler": [
+      { "isim": "Ocak", "satisMiktari": 4000 },
+      { "isim": "Şubat", "satisMiktari": 3000 },
+      { "isim": "Mart", "satisMiktari": 5000 },
+      { "isim": "Nisan", "satisMiktari": 4500 },
+      { "isim": "Mayıs", "satisMiktari": 6000 },
+      { "isim": "Haziran", "satisMiktari": 5500 },
+      { "isim": "Temmuz", "satisMiktari": 7000 },
+      { "isim": "Ağustos", "satisMiktari": 6500 },
+      { "isim": "Eylül", "satisMiktari": 5500 },
+      { "isim": "Ekim", "satisMiktari": 4800 },
+      { "isim": "Kasım", "satisMiktari": 5200 },
+      { "isim": "Aralık", "satisMiktari": 6800 }
+    ]
+  },
+  {
+    "isim": "Haftalık Ziyaretçi Sayısı",
+    "grafikTipi": "line",
+    "veriAnahtari": "deger",
+    "tur": "number",
+    "degerler": [1500, 1800, 2000, 1900, 2200, 2400, 2100]
+  },
+  {
+    "isim": "Müşteri Memnuniyeti",
+    "grafikTipi": "area",
+    "veriAnahtari": "deger",
+    "tur": "string",
+    "degerler": ["Çok Memnun", "Memnun", "Nötr", "Memnun Değil", "Hiç Memnun Değil"]
+  },
+  {
+    "isim": "Ürün Kategorileri Satış Dağılımı",
+    "grafikTipi": "pie",
+    "veriAnahtari": "satisMiktari",
+    "tur": "object",
+    "degerler": [
+      { "isim": "Elektronik", "satisMiktari": 35 },
+      { "isim": "Giyim", "satisMiktari": 25 },
+      { "isim": "Ev & Yaşam", "satisMiktari": 20 },
+      { "isim": "Kitap & Hobi", "satisMiktari": 20 }
+    ]
+  },
+  {
+    "isim": "Günlük Sipariş Adedi",
+    "grafikTipi": "bar",
+    "veriAnahtari": "deger",
+    "tur": "number",
+    "degerler": [120, 150, 180, 200, 190, 210, 230, 220, 240, 260]
+  }
+]

@@ -1,5 +1,5 @@
 import { Spin } from "antd";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Layout, Layouts, Responsive, WidthProvider } from "react-grid-layout";
 import GostergeKonteyner from "./GostergeKonteyner";
 import { IGosterge } from "./IGosterge";
@@ -12,81 +12,84 @@ interface Props {
   gostergeler: IGosterge<any>[];
 }
 
-const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts: Layouts | undefined) => {
+const useGostergeYukseklikleri = (
+  gostergeler: IGosterge<any>[],
+  layouts?: Layouts
+) => {
   const [yukseklikler, setYukseklikler] = useState<(number | null)[]>([]);
-  const observerRef = useRef<ResizeObserver | null>(null);
 
   const yukseklikHesapla = useCallback(() => {
-    const yeniYukseklikler = gostergeler.map(gosterge => {
-      const element = document.getElementsByClassName(gosterge.gostergeId || '')[0] as HTMLElement;
+    const yeniYukseklikler = gostergeler.map((gosterge) => {
+      const element = document.querySelector(
+        `.${gosterge.gostergeId}`
+      ) as HTMLElement;
       return element ? parseFloat(getComputedStyle(element).height) : null;
     });
     setYukseklikler(yeniYukseklikler);
   }, [gostergeler]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(yukseklikHesapla, 100);
+    const observer = new ResizeObserver(yukseklikHesapla);
+    const elements = gostergeler
+      .map((g) => document.querySelector(`.${g.gostergeId}`))
+      .filter(Boolean);
 
-    observerRef.current = new ResizeObserver(yukseklikHesapla);
+    elements.forEach((el) => observer.observe(el as Element));
+    setTimeout(yukseklikHesapla, 100);
 
-    gostergeler.forEach(gosterge => {
-      const element = document.getElementsByClassName(gosterge.gostergeId || '')[0];
-      if (element) observerRef.current?.observe(element);
-    });
+    if (layouts) yukseklikHesapla();
 
-    return () => {
-      clearTimeout(timeoutId);
-      observerRef.current?.disconnect();
-    };
-  }, [gostergeler, yukseklikHesapla]);
-
-  useEffect(() => {
-    if (layouts) {
-      yukseklikHesapla();
-    }
-  }, [layouts, yukseklikHesapla]);
+    return () => observer.disconnect();
+  }, [gostergeler, yukseklikHesapla, layouts]);
 
   return yukseklikler;
 };
 
 const GostergePaneli = ({ gostergeler }: Props) => {
   const [layouts, setLayouts] = useState<Layouts>();
+  const [isReady, setIsReady] = useState(false);
 
-  const onLayoutChange = useCallback((_: Layout[], layouts: Layouts) => {
-    setLayouts(layouts);
-    localStorage.setItem("savedLayouts", JSON.stringify(layouts));
+  const onLayoutChange = useCallback((_: Layout[], newLayouts: Layouts) => {
+    setLayouts(newLayouts);
+    localStorage.setItem("savedLayouts", JSON.stringify(newLayouts));
   }, []);
 
   useEffect(() => {
     const savedLayouts = localStorage.getItem("savedLayouts");
-    if (savedLayouts) {
-      setLayouts(JSON.parse(savedLayouts));
-    } else {
-      const defaultLayouts: Layouts = {
-        lg: gostergeler.map((gosterge, index) => ({
-          i: gosterge.gostergeId || `gosterge${index}`,
-          x: gosterge.varsayilanLayout?.x ?? 0,
-          y: gosterge.varsayilanLayout?.y ?? 0,
-          w: gosterge.varsayilanLayout?.w ?? 3,
-          h: gosterge.varsayilanLayout?.h ?? 2,
-          minW: gosterge.varsayilanLayout?.minW ?? 2,
-          maxW: gosterge.varsayilanLayout?.maxW ?? 4,
-          minH: gosterge.varsayilanLayout?.minH ?? 2,
-          maxH: gosterge.varsayilanLayout?.maxH ?? 4,
-          static: gosterge.varsayilanLayout?.static ?? false,
-        })),
-        md: [],
-        sm: [],
-        xs: [],
-        xxs: [],
-      };
-      setLayouts(defaultLayouts);
-    }
+    const initialLayouts = savedLayouts
+      ? JSON.parse(savedLayouts)
+      : {
+          lg: gostergeler.map((gosterge, index) => ({
+            i: gosterge.gostergeId || `gosterge${index}`,
+            x: gosterge.varsayilanLayout?.x ?? 0,
+            y: gosterge.varsayilanLayout?.y ?? 0,
+            w: gosterge.varsayilanLayout?.w ?? 3,
+            h: gosterge.varsayilanLayout?.h ?? 2,
+            minW: gosterge.varsayilanLayout?.minW ?? 2,
+            maxW: gosterge.varsayilanLayout?.maxW ?? 4,
+            minH: gosterge.varsayilanLayout?.minH ?? 2,
+            maxH: gosterge.varsayilanLayout?.maxH ?? 4,
+            static: gosterge.varsayilanLayout?.static ?? false,
+          })),
+          md: [],
+          sm: [],
+          xs: [],
+          xxs: [],
+        };
+
+    setLayouts(initialLayouts);
+
+    const timer = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timer);
   }, [gostergeler]);
 
   const yukseklikler = useGostergeYukseklikleri(gostergeler, layouts);
 
-  if (layouts === undefined) return <Spin size="large" className="spin" />;
+  if (!isReady || !layouts) {
+    return (
+        <Spin size="large" className="spin-layout"/>
+    );
+  }
 
   return (
     <div className="grid-linechart">
