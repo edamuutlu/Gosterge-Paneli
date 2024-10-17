@@ -12,37 +12,29 @@ interface Props {
   gostergeler: IGosterge<any>[];
 }
 
-const useGostergeYukseklikleri = (
-  gostergeler: IGosterge<any>[],
-  layouts?: Layouts
-) => {
+const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts?: Layouts) => {
   const [yukseklikler, setYukseklikler] = useState<(number | null)[]>([]);
 
   const yukseklikHesapla = useCallback(() => {
-    const yeniYukseklikler = gostergeler.map((gosterge) => {
-      const element = document.querySelector(
-        `.${gosterge.gostergeId}`
-      ) as HTMLElement;
-      return element ? parseFloat(getComputedStyle(element).height) : null;
-    });
-    setYukseklikler(yeniYukseklikler);
+    setYukseklikler(gostergeler.map(g => {
+      const el = document.querySelector(`.${g.gostergeId}`) as HTMLElement;
+      return el ? parseFloat(getComputedStyle(el).height) : null;
+    }));
   }, [gostergeler]);
 
   useEffect(() => {
     const observer = new ResizeObserver(yukseklikHesapla);
-    const elements = gostergeler
-      .map((g) => document.querySelector(`.${g.gostergeId}`))
-      .filter(Boolean);
+    const elements = gostergeler.map(g => document.querySelector(`.${g.gostergeId}`)).filter(Boolean);
 
-    const delayRender = setTimeout(() => {
-      elements.forEach((el) => observer.observe(el as Element));
+    const timer = setTimeout(() => {
+      elements.forEach(el => observer.observe(el as Element));
       yukseklikHesapla();
-    }, 500); 
+    }, 500);
 
     if (layouts) yukseklikHesapla();
 
     return () => {
-      clearTimeout(delayRender);
+      clearTimeout(timer);
       observer.disconnect();
     };
   }, [gostergeler, yukseklikHesapla, layouts]);
