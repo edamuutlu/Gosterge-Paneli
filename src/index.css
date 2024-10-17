@@ -54,7 +54,7 @@ code {
 }
 /* index.tsx bitiş */
 
-/* GostergeKonteyner başlangıç */
+/* GostergeKonteyner.tsx başlangıç */
 .ust-container {
   display: flex;
   align-items: center;
@@ -104,4 +104,4 @@ code {
   height: 100%;
   width: 100%;
 }
-/* GostergeKonteyner bitiş */
+/* GostergeKonteyner.tsx bitiş */

@@ -37,11 +37,7 @@ const GostergeKonteyner = ({
             `panel_${1}_gosterge_${gosterge.gostergeId}`
           );
           if (r) {
-            const parsedDurum = JSON.parse(r);
-            suAnkiDurum.current = parsedDurum;
-            if (gosterge.getBaslik) {
-              setBaslik(gosterge.getBaslik(parsedDurum));
-            }
+            suAnkiDurum.current = JSON.parse(r);
             setGostergeNode(
               gosterge.getNode(suAnkiDurum.current, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
             );
@@ -98,9 +94,10 @@ const GostergeKonteyner = ({
                     title="Kaydet"
                     onClick={() => {
                       setDuzenleniyor(false);
+                      setGostergeNode(gosterge.getNode(duzenlenenDurum, null, suAnkiDurum.current));
                       suAnkiDurum.current = duzenlenenDurum;
-                      if (gosterge.getBaslik)
-                        setBaslik(gosterge.getBaslik(suAnkiDurum.current));
+                      if (gosterge.getBaslik) setBaslik(gosterge.getBaslik(suAnkiDurum.current));
+                     
                       if (gosterge.gostergeId) {
                         localStorage.setItem(
                           `panel_${1}_gosterge_${gosterge.gostergeId}`,

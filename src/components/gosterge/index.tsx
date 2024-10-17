@@ -34,12 +34,17 @@ const useGostergeYukseklikleri = (
       .map((g) => document.querySelector(`.${g.gostergeId}`))
       .filter(Boolean);
 
-    elements.forEach((el) => observer.observe(el as Element));
-    setTimeout(yukseklikHesapla, 100);
+    const delayRender = setTimeout(() => {
+      elements.forEach((el) => observer.observe(el as Element));
+      yukseklikHesapla();
+    }, 500); 
 
     if (layouts) yukseklikHesapla();
 
-    return () => observer.disconnect();
+    return () => {
+      clearTimeout(delayRender);
+      observer.disconnect();
+    };
   }, [gostergeler, yukseklikHesapla, layouts]);
 
   return yukseklikler;
@@ -47,7 +52,7 @@ const useGostergeYukseklikleri = (
 
 const GostergePaneli = ({ gostergeler }: Props) => {
   const [layouts, setLayouts] = useState<Layouts>();
-  const [isReady, setIsReady] = useState(false);
+  const [yukleniyor, setYukleniyor] = useState(true);
 
   const onLayoutChange = useCallback((_: Layout[], newLayouts: Layouts) => {
     setLayouts(newLayouts);
@@ -79,16 +84,14 @@ const GostergePaneli = ({ gostergeler }: Props) => {
 
     setLayouts(initialLayouts);
 
-    const timer = setTimeout(() => setIsReady(true), 100);
+    const timer = setTimeout(() => setYukleniyor(false), 100);
     return () => clearTimeout(timer);
   }, [gostergeler]);
 
   const yukseklikler = useGostergeYukseklikleri(gostergeler, layouts);
 
-  if (!isReady || !layouts) {
-    return (
-        <Spin size="large" className="spin-layout"/>
-    );
+  if (yukleniyor || !layouts) {
+    return <Spin size="large" className="spin-layout" />;
   }
 
   return (

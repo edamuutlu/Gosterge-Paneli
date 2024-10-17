@@ -28,13 +28,12 @@ const { Title } = Typography;
 const { Option } = Select;
 
 type GrafikTipi = "line" | "bar" | "area" | "pie";
-type VeriTuru = "object" | "number" | "string";
 
 interface GostergeDurum {
   isim: string;
   grafikTipi: GrafikTipi;
   veriAnahtari: string;
-  tur: VeriTuru;
+  tur: any;
   degerler: any;
 }
 
@@ -120,14 +119,14 @@ const grafikGetir = ({ tip, veri, veriAnahtari, renk }: GrafikProps) => {
   );
 };
 
-const GostergeComponent = ({
+const GostergeNode = ({
   durum,
   yukseklik,
 }: {
   durum: GostergeDurum;
   yukseklik?: number;
 }) => {
-  const formatVeri = (degerler: any, tur: VeriTuru): any[] => {
+  const veriFormatla = (degerler: any, tur: any): any[] => {
     if (!Array.isArray(degerler)) {
       degerler = [degerler];
     }
@@ -150,9 +149,9 @@ const GostergeComponent = ({
     }
   };
 
-  const formattedData = formatVeri(durum.degerler, durum.tur);
+  const formatliVeri = veriFormatla(durum.degerler, durum.tur);
 
-  if (formattedData.length === 0) {
+  if (formatliVeri.length === 0) {
     return (
       <Alert
         message="Hata"
@@ -167,7 +166,7 @@ const GostergeComponent = ({
     <ResponsiveContainer width="95%" height={(yukseklik || 0) - 200}>
       {grafikGetir({
         tip: durum.grafikTipi,
-        veri: formattedData,
+        veri: formatliVeri,
         veriAnahtari: durum.veriAnahtari,
         renk: "#82ca9d",
       })}
@@ -177,7 +176,7 @@ const GostergeComponent = ({
 
 const varsayilanGostergeAyarlar = {
   getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
-    <GostergeComponent durum={durum} yukseklik={yukseklik} />
+    <GostergeNode durum={durum} yukseklik={yukseklik} />
   ),
   varsayilanDurum: {
     isim: "",
@@ -220,7 +219,6 @@ const varsayilanGostergeAyarlar = {
     </div>
   ),
   getBaslik: (isim: string, durum: GostergeDurum) => {
-    console.log('durum :>> ', durum);
     const Ikon =
       durum.grafikTipi === "bar"
         ? AiOutlineBarChart
@@ -256,7 +254,7 @@ const gostergeOlustur = (
     varsayilanGostergeAyarlar.getBaslik(gosterge.isim, durum),
   varsayilanDurum: gosterge,
   getNode: (durum: GostergeDurum, oncekiDurum?: any, yukseklik?: number) => (
-    <GostergeComponent durum={gosterge} yukseklik={yukseklik} />
+    <GostergeNode durum={durum} yukseklik={yukseklik} />
   ),
 });
 
@@ -282,8 +280,8 @@ export const useGosterge = () => {
       try {
         setYukleniyor(true);
         const data: GostergeDurum[] = await fetchData();
-        const newGosterge = data.map((item, index) => gostergeOlustur(item, index));
-        setGosterge(newGosterge);
+        const yeniGosterge = data.map((item, index) => gostergeOlustur(item, index));
+        setGosterge(yeniGosterge);
       } catch (error) {
         console.error("Error loading gösterge data:", error);
       } finally {
