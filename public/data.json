@@ -27,25 +27,6 @@
     "degerler": [1500, 1800, 2000, 1900, 2200, 2400, 2100]
   },
   {
-    "isim": "Müşteri Memnuniyeti",
-    "grafikTipi": "area",
-    "veriAnahtari": "deger",
-    "tur": "string",
-    "degerler": ["Çok Memnun", "Memnun", "Nötr", "Memnun Değil", "Hiç Memnun Değil"]
-  },
-  {
-    "isim": "Ürün Kategorileri Satış Dağılımı",
-    "grafikTipi": "pie",
-    "veriAnahtari": "satisMiktari",
-    "tur": "object",
-    "degerler": [
-      { "isim": "Elektronik", "satisMiktari": 35 },
-      { "isim": "Giyim", "satisMiktari": 25 },
-      { "isim": "Ev & Yaşam", "satisMiktari": 20 },
-      { "isim": "Kitap & Hobi", "satisMiktari": 20 }
-    ]
-  },
-  {
     "isim": "Günlük Sipariş Adedi",
     "grafikTipi": "bar",
     "veriAnahtari": "deger",

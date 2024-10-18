@@ -89,19 +89,17 @@ code {
 
 .gosterge-icerik {
   display: flex;
-  direction: 1;
   overflow: auto;
-}
-
-.gosterge-icerik-hidden {
-  display: flex;
-  direction: 1;
-  overflow: hidden;
+  height: 100%;
 }
 
 .gosterge-icerik-item {
   padding: 8px;
-  height: 100%;
+  height: 95%;
   width: 100%;
 }
 /* GostergeKonteyner.tsx bitiş */
+
+:where(.css-dev-only-do-not-override-1hpnbz2).ant-card .ant-card-body{
+  height: 95%;
+}

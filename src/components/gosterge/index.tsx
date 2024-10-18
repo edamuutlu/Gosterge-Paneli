@@ -12,36 +12,6 @@ interface Props {
   gostergeler: IGosterge<any>[];
 }
 
-const useGostergeYukseklikleri = (gostergeler: IGosterge<any>[], layouts?: Layouts) => {
-  const [yukseklikler, setYukseklikler] = useState<(number | null)[]>([]);
-
-  const yukseklikHesapla = useCallback(() => {
-    setYukseklikler(gostergeler.map(g => {
-      const el = document.querySelector(`.${g.gostergeId}`) as HTMLElement;
-      return el ? parseFloat(getComputedStyle(el).height) : null;
-    }));
-  }, [gostergeler]);
-
-  useEffect(() => {
-    const observer = new ResizeObserver(yukseklikHesapla);
-    const elements = gostergeler.map(g => document.querySelector(`.${g.gostergeId}`)).filter(Boolean);
-
-    const timer = setTimeout(() => {
-      elements.forEach(el => observer.observe(el as Element));
-      yukseklikHesapla();
-    }, 500);
-
-    if (layouts) yukseklikHesapla();
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, [gostergeler, yukseklikHesapla, layouts]);
-
-  return yukseklikler;
-};
-
 const GostergePaneli = ({ gostergeler }: Props) => {
   const [layouts, setLayouts] = useState<Layouts>();
   const [yukleniyor, setYukleniyor] = useState(true);
@@ -53,34 +23,33 @@ const GostergePaneli = ({ gostergeler }: Props) => {
 
   useEffect(() => {
     const savedLayouts = localStorage.getItem("savedLayouts");
-    const initialLayouts = savedLayouts
-      ? JSON.parse(savedLayouts)
-      : {
-          lg: gostergeler.map((gosterge, index) => ({
-            i: gosterge.gostergeId || `gosterge${index}`,
-            x: gosterge.varsayilanLayout?.x ?? 0,
-            y: gosterge.varsayilanLayout?.y ?? 0,
-            w: gosterge.varsayilanLayout?.w ?? 3,
-            h: gosterge.varsayilanLayout?.h ?? 2,
-            minW: gosterge.varsayilanLayout?.minW ?? 2,
-            maxW: gosterge.varsayilanLayout?.maxW ?? 4,
-            minH: gosterge.varsayilanLayout?.minH ?? 2,
-            maxH: gosterge.varsayilanLayout?.maxH ?? 4,
-            static: gosterge.varsayilanLayout?.static ?? false,
-          })),
-          md: [],
-          sm: [],
-          xs: [],
-          xxs: [],
-        };
+  
+    const defaultLayout: Layout[] = gostergeler.map((gosterge, index) => ({
+      i: gosterge.gostergeId || `gosterge${index}`,
+      x: gosterge.varsayilanLayout?.x ?? 0,
+      y: gosterge.varsayilanLayout?.y ?? 0,
+      w: gosterge.varsayilanLayout?.w ?? 3,
+      h: gosterge.varsayilanLayout?.h ?? 2,
+      minW: gosterge.varsayilanLayout?.minW ?? 2,
+      maxW: gosterge.varsayilanLayout?.maxW ?? 6,
+      minH: gosterge.varsayilanLayout?.minH ?? 2,
+      maxH: gosterge.varsayilanLayout?.maxH ?? 6,
+      static: gosterge.varsayilanLayout?.static ?? false,
+    }));
+  
+    const initialLayouts: Record<string, typeof defaultLayout> = savedLayouts
+    ? JSON.parse(savedLayouts)
+    : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
+        acc[size] = defaultLayout;
+        return acc;
+      }, {} as Record<string, typeof defaultLayout>);
 
-    setLayouts(initialLayouts);
-
+  setLayouts(initialLayouts);
+  
     const timer = setTimeout(() => setYukleniyor(false), 100);
     return () => clearTimeout(timer);
   }, [gostergeler]);
-
-  const yukseklikler = useGostergeYukseklikleri(gostergeler, layouts);
+  
 
   if (yukleniyor || !layouts) {
     return <Spin size="large" className="spin-layout" />;
@@ -106,7 +75,6 @@ const GostergePaneli = ({ gostergeler }: Props) => {
             <GostergeKonteyner
               gosterge={x}
               dragHandleSinifAdi={dragHandleSinifAdi}
-              yukseklik={yukseklikler[indis] ?? undefined}
             />
           </div>
         ))}

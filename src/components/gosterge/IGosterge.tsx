@@ -9,7 +9,7 @@ export interface IGostergeDuzenleProps<TDurum> {
 export interface IGosterge<TDurum> {
   isim?: string;
   gostergeId?: string;
-  getNode: (durum: TDurum, oncekiDurum?: TDurum, yukseklik?: number) => ReactNode;
+  getNode: (durum: TDurum, oncekiDurum?: TDurum) => ReactNode;
   varsayilanDurum: TDurum;
   varsayilanBaslik?: ReactNode;
   varsayilanLayout?: Layout;

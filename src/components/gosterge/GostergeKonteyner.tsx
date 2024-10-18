@@ -10,59 +10,64 @@ import ButtonGroup from "antd/es/button/button-group";
 const GostergeKonteyner = ({
   gosterge,
   dragHandleSinifAdi,
-  yukseklik,
 }: {
   panelId?: string;
   gosterge: IGosterge<any>;
   dragHandleSinifAdi: string;
-  yukseklik?: number;
 }) => {
-
   const { message } = App.useApp();
   const suAnkiDurum = useRef(gosterge.varsayilanDurum);
 
   const [baslik, setBaslik] = useState(gosterge.getBaslik ? gosterge.getBaslik(suAnkiDurum.current) : gosterge.varsayilanBaslik);
   const [duzenleniyor, setDuzenleniyor] = useState(false);
   
-  const [gostergeNode, setGostergeNode] = useState<ReactNode>(<GostergeYukleyici />);
+  const [gostergeNode, setGostergeNode] = useState<ReactNode>(null);
   const [duzenlenenDurum, setDuzenlenenDurum] = useState<any>();
-
-  const MINIMUM_YUKSEKLIK = 300; 
+  const [yukleniyor, setYukleniyor] = useState(true);
 
   useEffect(() => {
     const getDurum = async () => {
-      if (gosterge.gostergeId && gosterge.getDuzenle) {
+      if (gosterge.gostergeId) {
         try {
+          setYukleniyor(true);
           const r = localStorage.getItem(
             `panel_${1}_gosterge_${gosterge.gostergeId}`
           );
           if (r) {
             suAnkiDurum.current = JSON.parse(r);
-            setGostergeNode(
-              gosterge.getNode(suAnkiDurum.current, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
-            );
-            setDuzenlenenDurum(suAnkiDurum.current);
           } else {
-            setGostergeNode(
-              gosterge.getNode(gosterge.varsayilanDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
-            );
+            suAnkiDurum.current = gosterge.varsayilanDurum;
           }
-        } catch (error) {
-          message.error('Gösterge ayar yüklenemedi');
           setGostergeNode(
-            gosterge.getNode(gosterge.varsayilanDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK))
+            gosterge.getNode(suAnkiDurum.current, null)
           );
+          setDuzenlenenDurum(suAnkiDurum.current);
+        } catch (error) {
+          console.error('Gösterge ayar yüklenemedi:', error);
+          message.error('Gösterge ayar yüklenemedi');
+          suAnkiDurum.current = gosterge.varsayilanDurum;
+          setGostergeNode(
+            gosterge.getNode(gosterge.varsayilanDurum, null)
+          );
+        } finally {
+          setYukleniyor(false);
         }
       }
     };
     getDurum();
-  }, [gosterge, message, yukseklik]);
+  }, [gosterge, message]);
+
+  useEffect(() => {
+    if (!yukleniyor) {
+      setGostergeNode(gosterge.getNode(duzenleniyor ? duzenlenenDurum : suAnkiDurum.current, null));
+    }
+  }, [duzenlenenDurum, duzenleniyor, gosterge, yukleniyor]);
 
   useEffect(() => {
     if (duzenleniyor) {
-      setGostergeNode(gosterge.getNode(duzenlenenDurum, null, Math.max(yukseklik || 0, MINIMUM_YUKSEKLIK)));
+      setGostergeNode(gosterge.getNode(duzenlenenDurum, null));
     }
-  }, [yukseklik, duzenlenenDurum, duzenleniyor, gosterge]);
+  }, [duzenlenenDurum, duzenleniyor, gosterge]);
 
   const ustKisim = (
     <div className="ust-container">
@@ -94,7 +99,7 @@ const GostergeKonteyner = ({
                     title="Kaydet"
                     onClick={() => {
                       setDuzenleniyor(false);
-                      setGostergeNode(gosterge.getNode(duzenlenenDurum, null, suAnkiDurum.current));
+                      setGostergeNode(gosterge.getNode(duzenlenenDurum, suAnkiDurum.current));
                       suAnkiDurum.current = duzenlenenDurum;
                       if (gosterge.getBaslik) setBaslik(gosterge.getBaslik(suAnkiDurum.current));
                      
@@ -117,14 +122,13 @@ const GostergeKonteyner = ({
     </div>
   );
 
-  let node: ReactNode = gostergeNode || <GostergeYukleyici />;
+  let node: ReactNode = yukleniyor ? <GostergeYukleyici /> : gostergeNode;
   if (duzenleniyor && gosterge.getDuzenle) {
     node = gosterge.getDuzenle({
       durum: duzenlenenDurum,
       setDurum: setDuzenlenenDurum,
     });
   }
-
   return (
     <div className="gosterge-container">
       {gosterge.isim && (
@@ -134,10 +138,10 @@ const GostergeKonteyner = ({
       )}
       <div className="gosterge-ust">{ustKisim}</div>
       <Divider style={{margin:0}}/>
-      <div className={(yukseklik ?? 0) > 650 ? "gosterge-icerik-hidden":"gosterge-icerik"}>
+      <div className={"gosterge-icerik"}>
         <div className="gosterge-icerik-item">
           <Card
-            style={{ height: Math.max((yukseklik ?? 0) - 100, MINIMUM_YUKSEKLIK - 100) }}
+            style={{ height: "95%" }}
             title={gosterge.isim}
           >
             {node}
