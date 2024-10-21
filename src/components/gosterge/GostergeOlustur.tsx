@@ -11,38 +11,16 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { Layout } from 'react-grid-layout';
 import { AiOutlineLineChart, AiOutlineBarChart, AiOutlineAreaChart } from 'react-icons/ai';
 import { MdAreaChart } from 'react-icons/md';
 import { Select } from 'antd';
+import { IGosterge } from './IGosterge';
 
 type GrafikTipi = 'line' | 'bar' | 'area' | 'composed';
-
 
 export interface IGostergeDuzenleProps<TDurum extends BaseGostergeDurum> {
   durum: TDurum;
   setDurum: React.Dispatch<React.SetStateAction<TDurum>>;
-}
-
-export interface IGosterge<TDurum extends BaseGostergeDurum> {
-  isim?: string;
-  gostergeId?: string;
-  getNode: (durum: TDurum, oncekiDurum?: TDurum) => ReactElement;
-  varsayilanDurum: TDurum;
-  varsayilanBaslik?: ReactElement;
-  varsayilanLayout?: Layout;
-  getDuzenle?: (gdp: IGostergeDuzenleProps<TDurum>) => ReactElement;
-  getBaslik?: (durum: TDurum) => ReactElement;
-  getDataAsync: () => Promise<any[]>;
-}
-
-const formatData = (data: any[], type: 'object' | 'number', isim: string) => {
-  if (type === 'object') return data;
-
-  return data.map((value, index) => ({ 
-    isim: `Veri ${index + 1}`,
-    [isim]: value 
-  }));
 }
 
 interface BaseGostergeDurum {
@@ -51,14 +29,25 @@ interface BaseGostergeDurum {
   degerler?: { [key: string]: string }[];
 }
 
+const formatData = (data: any, type: 'object' | 'number' | 'string', isim: string) => {
+  if (typeof data === 'number' || typeof data === 'string' || type === 'object') {
+    return data;
+  }
+
+  return data.map((value: any, index: number) => ({ 
+    isim: `Veri ${index + 1}`,
+    [isim]: value 
+  }));
+}
+
 export const GostergeOlustur = <TDurum extends BaseGostergeDurum>({
   durum,
   getDataAsync,
 }: {
   durum: TDurum;
-  getDataAsync: () => Promise<any[]>;
+  getDataAsync: () => Promise<any>;
 }): ReactElement => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,12 +56,24 @@ export const GostergeOlustur = <TDurum extends BaseGostergeDurum>({
         setData(fetchedData);
       } catch (error) {
         console.error('Veri yükleme hatası:', error);
-        setData([]);
+        setData(null);
       }
     };
 
     fetchData();
   }, [getDataAsync]);
+
+  if (data === null) {
+    return <div>Yükleniyor...</div>;
+  }
+
+  if (typeof data === 'number' || typeof data === 'string') {
+    return (
+      <div>
+        {durum.isim}: {data}
+      </div>
+    );
+  }
 
   const getChildren = (): ReactElement[] => {
     if (data.length === 0 || !data[0]) {

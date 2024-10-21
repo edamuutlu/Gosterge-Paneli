@@ -42,5 +42,29 @@
       { "isim": "Haziran", "Aylık Satışlar": 5500, "Haftalık Ziyaretçi Sayısı": 2400, "Günlük Sipariş Adedi": 2100 },
       { "isim": "Temmuz", "Aylık Satışlar": 7000, "Haftalık Ziyaretçi Sayısı": 2100, "Günlük Sipariş Adedi": 2300 }
     ]
+  },
+  {
+    "isim": "Günlük Sipariş Adedi",
+    "grafikTipi": "bar",
+    "tur": "number",
+    "degerler": 120
+  },
+  {
+    "isim": "Günlük Sipariş Adedi",
+    "grafikTipi": "bar",
+    "tur": "string",
+    "degerler": "Yok"
+  },
+  {
+    "isim": "Günlük Sipariş Adedi",
+    "grafikTipi": "bar",
+    "tur": "string",
+    "degerler": "Yok"
+  },
+  {
+    "isim": "Günlük Sipariş Adedi",
+    "grafikTipi": "bar",
+    "tur": "string",
+    "degerler": "Yok"
   }
 ]

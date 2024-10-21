@@ -1,5 +1,5 @@
+import React, { useEffect, useState, useCallback } from "react";
 import { Spin } from "antd";
-import { useEffect, useState, useCallback } from "react";
 import { Layout, Layouts, Responsive, WidthProvider } from "react-grid-layout";
 import GostergeKonteyner from "./GostergeKonteyner";
 import { IGosterge } from "./IGosterge";
@@ -12,13 +12,25 @@ interface Props {
   gostergeler: IGosterge<any>[];
 }
 
-const GostergePaneli = ({ gostergeler }: Props) => {
+const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
   const [layouts, setLayouts] = useState<Layouts>();
   const [yukleniyor, setYukleniyor] = useState(true);
 
-  const onLayoutChange = useCallback((_: Layout[], newLayouts: Layouts) => {
-    setLayouts(newLayouts);
-    localStorage.setItem("savedLayouts", JSON.stringify(newLayouts));
+  const onLayoutChange = useCallback((currentLayout: Layout[], allLayouts: Layouts) => {
+    setLayouts((prevLayouts) => {
+      const updatedLayouts = { ...prevLayouts };
+      Object.keys(allLayouts).forEach((breakpoint) => {
+        updatedLayouts[breakpoint] = allLayouts[breakpoint].map((item) => ({
+          ...item,
+          minW: item.minW || 2,
+          maxW: item.maxW || 6,
+          minH: item.minH || 2,
+          maxH: item.maxH || 6,
+        }));
+      });
+      localStorage.setItem("savedLayouts", JSON.stringify(updatedLayouts));
+      return updatedLayouts;
+    });
   }, []);
 
   useEffect(() => {
@@ -28,8 +40,8 @@ const GostergePaneli = ({ gostergeler }: Props) => {
       i: gosterge.gostergeId || `${index}`,
       x: gosterge.varsayilanLayout?.x ?? 0,
       y: gosterge.varsayilanLayout?.y ?? 0,
-      w: gosterge.varsayilanLayout?.w ?? 3,
-      h: gosterge.varsayilanLayout?.h ?? 2,
+      w: Math.min(Math.max(gosterge.varsayilanLayout?.w ?? 3, gosterge.varsayilanLayout?.minW ?? 2), gosterge.varsayilanLayout?.maxW ?? 6),
+      h: Math.min(Math.max(gosterge.varsayilanLayout?.h ?? 2, gosterge.varsayilanLayout?.minH ?? 2), gosterge.varsayilanLayout?.maxH ?? 6),
       minW: gosterge.varsayilanLayout?.minW ?? 2,
       maxW: gosterge.varsayilanLayout?.maxW ?? 6,
       minH: gosterge.varsayilanLayout?.minH ?? 2,
@@ -37,12 +49,12 @@ const GostergePaneli = ({ gostergeler }: Props) => {
       static: gosterge.varsayilanLayout?.static ?? false,
     }));
 
-    const initialLayouts: Record<string, typeof defaultLayout> = savedLayouts
+    const initialLayouts: Layouts = savedLayouts
       ? JSON.parse(savedLayouts)
       : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
           acc[size] = defaultLayout;
           return acc;
-        }, {} as Record<string, typeof defaultLayout>);
+        }, {} as Layouts);
 
     setLayouts(initialLayouts);
 
@@ -58,8 +70,6 @@ const GostergePaneli = ({ gostergeler }: Props) => {
     <div className="grid-linechart">
       <ResponsiveGridLayout
         className="layout"
-        /* compactType={null}
-        preventCollision={true} */
         onLayoutChange={onLayoutChange}
         layouts={layouts}
         draggableHandle={`.${dragHandleSinifAdi}`}
@@ -69,10 +79,13 @@ const GostergePaneli = ({ gostergeler }: Props) => {
         autoSize={true}
         resizeHandles={['se', 'ne']}
       >
-        {gostergeler.map((x, indis) => (
-          <div key={x.gostergeId || `${indis}`} className={x.gostergeId || `${indis}`}>
+        {gostergeler.map((gosterge, indis) => (
+          <div 
+            key={gosterge.gostergeId || `${indis}`} 
+            className={gosterge.gostergeId || `${indis}`}
+          >
             <GostergeKonteyner
-              gosterge={x}
+              gosterge={gosterge}
               dragHandleSinifAdi={dragHandleSinifAdi}
             />
           </div>
