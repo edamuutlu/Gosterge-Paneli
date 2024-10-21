@@ -2,35 +2,45 @@
   {
     "isim": "Aylık Satışlar",
     "grafikTipi": "bar",
-    "veriAnahtari": "satisMiktari",
     "tur": "object",
     "degerler": [
-      { "isim": "Ocak", "satisMiktari": 4000 },
-      { "isim": "Şubat", "satisMiktari": 3000 },
-      { "isim": "Mart", "satisMiktari": 5000 },
-      { "isim": "Nisan", "satisMiktari": 4500 },
-      { "isim": "Mayıs", "satisMiktari": 6000 },
-      { "isim": "Haziran", "satisMiktari": 5500 },
-      { "isim": "Temmuz", "satisMiktari": 7000 },
-      { "isim": "Ağustos", "satisMiktari": 6500 },
-      { "isim": "Eylül", "satisMiktari": 5500 },
-      { "isim": "Ekim", "satisMiktari": 4800 },
-      { "isim": "Kasım", "satisMiktari": 5200 },
-      { "isim": "Aralık", "satisMiktari": 6800 }
+      { "isim": "Ocak", "Aylık Satışlar": 4000 },
+      { "isim": "Şubat", "Aylık Satışlar": 3000 },
+      { "isim": "Mart", "Aylık Satışlar": 5000 },
+      { "isim": "Nisan", "Aylık Satışlar": 4500 },
+      { "isim": "Mayıs", "Aylık Satışlar": 6000 },
+      { "isim": "Haziran", "Aylık Satışlar": 5500 },
+      { "isim": "Temmuz", "Aylık Satışlar": 7000 },
+      { "isim": "Ağustos", "Aylık Satışlar": 6500 },
+      { "isim": "Eylül", "Aylık Satışlar": 5500 },
+      { "isim": "Ekim", "Aylık Satışlar": 4800 },
+      { "isim": "Kasım", "Aylık Satışlar": 5200 },
+      { "isim": "Aralık", "Aylık Satışlar": 6800 }
     ]
   },
   {
     "isim": "Haftalık Ziyaretçi Sayısı",
     "grafikTipi": "line",
-    "veriAnahtari": "deger",
     "tur": "number",
     "degerler": [1500, 1800, 2000, 1900, 2200, 2400, 2100]
   },
   {
     "isim": "Günlük Sipariş Adedi",
     "grafikTipi": "bar",
-    "veriAnahtari": "deger",
     "tur": "number",
     "degerler": [120, 150, 180, 200, 190, 210, 230, 220, 240, 260]
+  },{
+    "isim": "Genel İstatistikler",
+    "grafikTipi": "composed",
+    "tur": "object",
+    "degerler": [
+      { "isim": "Ocak", "Aylık Satışlar": 4000, "Haftalık Ziyaretçi Sayısı": 1500, "Günlük Sipariş Adedi": 1200 },
+      { "isim": "Şubat", "Aylık Satışlar": 3000, "Haftalık Ziyaretçi Sayısı": 1800, "Günlük Sipariş Adedi": 1500 },
+      { "isim": "Mart", "Aylık Satışlar": 5000, "Haftalık Ziyaretçi Sayısı": 2000, "Günlük Sipariş Adedi": 1800 },
+      { "isim": "Nisan", "Aylık Satışlar": 4500, "Haftalık Ziyaretçi Sayısı": 1900, "Günlük Sipariş Adedi": 2000 },
+      { "isim": "Mayıs", "Aylık Satışlar": 6000, "Haftalık Ziyaretçi Sayısı": 2200, "Günlük Sipariş Adedi": 1900 },
+      { "isim": "Haziran", "Aylık Satışlar": 5500, "Haftalık Ziyaretçi Sayısı": 2400, "Günlük Sipariş Adedi": 2100 },
+      { "isim": "Temmuz", "Aylık Satışlar": 7000, "Haftalık Ziyaretçi Sayısı": 2100, "Günlük Sipariş Adedi": 2300 }
+    ]
   }
 ]

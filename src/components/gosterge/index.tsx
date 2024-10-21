@@ -23,9 +23,9 @@ const GostergePaneli = ({ gostergeler }: Props) => {
 
   useEffect(() => {
     const savedLayouts = localStorage.getItem("savedLayouts");
-  
+
     const defaultLayout: Layout[] = gostergeler.map((gosterge, index) => ({
-      i: gosterge.gostergeId || `gosterge${index}`,
+      i: gosterge.gostergeId || `${index}`,
       x: gosterge.varsayilanLayout?.x ?? 0,
       y: gosterge.varsayilanLayout?.y ?? 0,
       w: gosterge.varsayilanLayout?.w ?? 3,
@@ -36,20 +36,19 @@ const GostergePaneli = ({ gostergeler }: Props) => {
       maxH: gosterge.varsayilanLayout?.maxH ?? 6,
       static: gosterge.varsayilanLayout?.static ?? false,
     }));
-  
-    const initialLayouts: Record<string, typeof defaultLayout> = savedLayouts
-    ? JSON.parse(savedLayouts)
-    : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
-        acc[size] = defaultLayout;
-        return acc;
-      }, {} as Record<string, typeof defaultLayout>);
 
-  setLayouts(initialLayouts);
-  
+    const initialLayouts: Record<string, typeof defaultLayout> = savedLayouts
+      ? JSON.parse(savedLayouts)
+      : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
+          acc[size] = defaultLayout;
+          return acc;
+        }, {} as Record<string, typeof defaultLayout>);
+
+    setLayouts(initialLayouts);
+
     const timer = setTimeout(() => setYukleniyor(false), 100);
     return () => clearTimeout(timer);
   }, [gostergeler]);
-  
 
   if (yukleniyor || !layouts) {
     return <Spin size="large" className="spin-layout" />;
@@ -59,19 +58,19 @@ const GostergePaneli = ({ gostergeler }: Props) => {
     <div className="grid-linechart">
       <ResponsiveGridLayout
         className="layout"
-        compactType="vertical"
+        /* compactType={null}
+        preventCollision={true} */
         onLayoutChange={onLayoutChange}
         layouts={layouts}
         draggableHandle={`.${dragHandleSinifAdi}`}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 }}
         rowHeight={150}
+        autoSize={true}
+        resizeHandles={['se', 'ne']}
       >
         {gostergeler.map((x, indis) => (
-          <div
-            key={x.gostergeId || `gosterge${indis}`}
-            className={x.gostergeId || `gosterge${indis}`}
-          >
+          <div key={x.gostergeId || `${indis}`} className={x.gostergeId || `${indis}`}>
             <GostergeKonteyner
               gosterge={x}
               dragHandleSinifAdi={dragHandleSinifAdi}
