@@ -2,7 +2,6 @@
   {
     "isim": "Aylık Satışlar",
     "grafikTipi": "bar",
-    "tur": "object",
     "degerler": [
       { "isim": "Ocak", "Aylık Satışlar": 4000 },
       { "isim": "Şubat", "Aylık Satışlar": 3000 },
@@ -21,7 +20,6 @@
   {
     "isim": "Genel İstatistikler",
     "grafikTipi": "composed",
-    "tur": "object",
     "degerler": [
       { "isim": "Ocak", "Aylık Satışlar": 4000, "Haftalık Ziyaretçi Sayısı": 1500, "Günlük Sipariş Adedi": 1200 },
       { "isim": "Şubat", "Aylık Satışlar": 3000, "Haftalık Ziyaretçi Sayısı": 1800, "Günlük Sipariş Adedi": 1500 },
@@ -33,15 +31,45 @@
     ]
   },
   {
+    "isim": "Aylık Ziyaretçi Sayısı",
+    "grafikTipi": "line",
+    "degerler": [
+      { "isim": "Ocak", "Aylık Ziyaretçi Sayısı": 4000 },
+      { "isim": "Şubat", "Aylık Ziyaretçi Sayısı": 4500 },
+      { "isim": "Mart", "Aylık Ziyaretçi Sayısı": 5000 },
+      { "isim": "Nisan", "Aylık Ziyaretçi Sayısı": 4800 },
+      { "isim": "Mayıs", "Aylık Ziyaretçi Sayısı": 5300 },
+      { "isim": "Haziran", "Aylık Ziyaretçi Sayısı": 6000 },
+      { "isim": "Temmuz", "Aylık Ziyaretçi Sayısı": 5500 },
+      { "isim": "Ağustos", "Aylık Ziyaretçi Sayısı": 6200 },
+      { "isim": "Eylül", "Aylık Ziyaretçi Sayısı": 5900 },
+      { "isim": "Ekim", "Aylık Ziyaretçi Sayısı": 6100 },
+      { "isim": "Kasım", "Aylık Ziyaretçi Sayısı": 5700 },
+      { "isim": "Aralık", "Aylık Ziyaretçi Sayısı": 6300 }
+    ]
+  },
+  {
+    "isim": "Haftalık Kazanç",
+    "grafikTipi": "area",
+    "degerler": [
+      { "isim": "1. Hafta", "Haftalık Kazanç": 1200 },
+      { "isim": "2. Hafta", "Haftalık Kazanç": 1400 },
+      { "isim": "3. Hafta", "Haftalık Kazanç": 1800 },
+      { "isim": "4. Hafta", "Haftalık Kazanç": 1600 },
+      { "isim": "5. Hafta", "Haftalık Kazanç": 1900 },
+      { "isim": "6. Hafta", "Haftalık Kazanç": 2000 },
+      { "isim": "7. Hafta", "Haftalık Kazanç": 2300 },
+      { "isim": "8. Hafta", "Haftalık Kazanç": 2500 }
+    ]
+  },
+  {
     "isim": "Günlük Sipariş Adedi",
     "grafikTipi": "yok",
-    "tur": "number",
     "degerler": 120
   },
   {
     "isim": "Günlük Sipariş Adedi",
     "grafikTipi": "yok",
-    "tur": "string",
     "degerler": "Yok"
   }
 ]

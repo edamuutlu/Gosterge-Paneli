@@ -15,7 +15,6 @@ export interface IGosterge<TDurum> {
   varsayilanLayout?: Layout;
   getDuzenle?: (gdp: IGostergeDuzenleProps<TDurum>) => ReactNode;
   getBaslik?: (durum: TDurum) => ReactNode;
-  /* getDataAsync?: () => Promise<any>; */
 }
 
 export const varsayilanGostergeLayout: Layout = {
