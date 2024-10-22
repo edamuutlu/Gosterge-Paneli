@@ -30,32 +30,33 @@ const GostergeKonteyner = ({
       if (gosterge.gostergeId) {
         try {
           setYukleniyor(true);
-          const r = localStorage.getItem(
-            `panel_${1}_gosterge_${gosterge.gostergeId}`
-          );
+          
+          const r = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
+          
           if (r) {
             suAnkiDurum.current = JSON.parse(r);
           } else {
             suAnkiDurum.current = gosterge.varsayilanDurum;
           }
-          setGostergeNode(
-            gosterge.getNode(suAnkiDurum.current, null)
-          );
+  
+          localStorage.removeItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
+  
+          setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
           setDuzenlenenDurum(suAnkiDurum.current);
         } catch (error) {
           console.error('Gösterge ayar yüklenemedi:', error);
           message.error('Gösterge ayar yüklenemedi');
           suAnkiDurum.current = gosterge.varsayilanDurum;
-          setGostergeNode(
-            gosterge.getNode(gosterge.varsayilanDurum, null)
-          );
+          setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
         } finally {
           setYukleniyor(false);
         }
       }
     };
+    
     getDurum();
   }, [gosterge, message]);
+  
 
   useEffect(() => {
     if (!yukleniyor) {
