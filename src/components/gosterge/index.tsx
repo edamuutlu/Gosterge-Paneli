@@ -16,27 +16,35 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
   const [layouts, setLayouts] = useState<Layouts>();
   const [yukleniyor, setYukleniyor] = useState(true);
 
-  const onLayoutChange = useCallback((currentLayout: Layout[], allLayouts: Layouts) => {
-    setLayouts((prevLayouts) => {
-      const updatedLayouts = { ...prevLayouts };
-      Object.keys(allLayouts).forEach((breakpoint) => {
-        updatedLayouts[breakpoint] = allLayouts[breakpoint].map((item) => ({
+  const onLayoutChange = useCallback((currentLayout: Layout[], tumLayoutlar: Layouts) => {
+    setLayouts((oncekiLayout) => {
+      const guncellenmisLayoutlar = { ...oncekiLayout };
+  
+      Object.keys(tumLayoutlar).forEach((breakpoint) => {
+        guncellenmisLayoutlar[breakpoint] = tumLayoutlar[breakpoint].map((item) => ({
           ...item,
+          x: item.x || 0,
+          y: item.y || 0,
+          w: Math.min(Math.max(item.w || 3, item.minW || 2), item.maxW || 6),
+          h: Math.min(Math.max(item.h || 2, item.minH || 2), item.maxH || 6),
           minW: item.minW || 2,
           maxW: item.maxW || 6,
           minH: item.minH || 2,
           maxH: item.maxH || 6,
+          static: item.static || false,
         }));
       });
-      localStorage.setItem("savedLayouts", JSON.stringify(updatedLayouts));
-      return updatedLayouts;
+  
+      localStorage.setItem("kaydedilmisLayoutlar", JSON.stringify(guncellenmisLayoutlar)); 
+      return guncellenmisLayoutlar;
     });
   }, []);
+  
 
   useEffect(() => {
-    const savedLayouts = localStorage.getItem("savedLayouts");
+    const kaydedilmisLayoutlar = localStorage.getItem("kaydedilmisLayoutlar");
 
-    const defaultLayout: Layout[] = gostergeler.map((gosterge, index) => ({
+    const varsayilanLayout: Layout[] = gostergeler.map((gosterge, index) => ({
       i: gosterge.gostergeId || `${index}`,
       x: gosterge.varsayilanLayout?.x ?? 0,
       y: gosterge.varsayilanLayout?.y ?? 0,
@@ -49,17 +57,17 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
       static: gosterge.varsayilanLayout?.static ?? false,
     }));
 
-    const initialLayouts: Layouts = savedLayouts
-      ? JSON.parse(savedLayouts)
+    const baslangicLayout: Layouts = kaydedilmisLayoutlar
+      ? JSON.parse(kaydedilmisLayoutlar)
       : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
-          acc[size] = defaultLayout;
+          acc[size] = varsayilanLayout;
           return acc;
         }, {} as Layouts);
 
-    setLayouts(initialLayouts);
+    setLayouts(baslangicLayout);
 
-    const timer = setTimeout(() => setYukleniyor(false), 250);
-    return () => clearTimeout(timer);
+    const zamanlayici = setTimeout(() => setYukleniyor(false), 250);
+    return () => clearTimeout(zamanlayici);
   }, [gostergeler]);
 
   if (yukleniyor || !layouts) {
