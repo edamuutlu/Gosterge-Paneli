@@ -19,17 +19,6 @@
     ]
   },
   {
-    "isim": "Haftalık Ziyaretçi Sayısı",
-    "grafikTipi": "line",
-    "tur": "number",
-    "degerler": [1500, 1800, 2000, 1900, 2200, 2400, 2100]
-  },
-  {
-    "isim": "Günlük Sipariş Adedi",
-    "grafikTipi": "bar",
-    "tur": "number",
-    "degerler": [120, 150, 180, 200, 190, 210, 230, 220, 240, 260]
-  },{
     "isim": "Genel İstatistikler",
     "grafikTipi": "composed",
     "tur": "object",
@@ -45,25 +34,13 @@
   },
   {
     "isim": "Günlük Sipariş Adedi",
-    "grafikTipi": "bar",
+    "grafikTipi": "yok",
     "tur": "number",
     "degerler": 120
   },
   {
     "isim": "Günlük Sipariş Adedi",
-    "grafikTipi": "bar",
-    "tur": "string",
-    "degerler": "Yok"
-  },
-  {
-    "isim": "Günlük Sipariş Adedi",
-    "grafikTipi": "bar",
-    "tur": "string",
-    "degerler": "Yok"
-  },
-  {
-    "isim": "Günlük Sipariş Adedi",
-    "grafikTipi": "bar",
+    "grafikTipi": "yok",
     "tur": "string",
     "degerler": "Yok"
   }

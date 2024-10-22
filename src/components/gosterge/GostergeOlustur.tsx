@@ -16,7 +16,7 @@ import { MdAreaChart } from 'react-icons/md';
 import { Select } from 'antd';
 import { IGosterge } from './IGosterge';
 
-type GrafikTipi = 'line' | 'bar' | 'area' | 'composed';
+type GrafikTipi = 'line' | 'bar' | 'area' | 'composed' | 'yok';
 
 export interface IGostergeDuzenleProps<TDurum extends BaseGostergeDurum> {
   durum: TDurum;
@@ -26,57 +26,24 @@ export interface IGostergeDuzenleProps<TDurum extends BaseGostergeDurum> {
 interface BaseGostergeDurum {
   isim: string;
   grafikTipi: GrafikTipi;
-  degerler?: { [key: string]: string }[];
-}
-
-const formatData = (data: any, type: 'object' | 'number' | 'string', isim: string) => {
-  if (typeof data === 'number' || typeof data === 'string' || type === 'object') {
-    return data;
-  }
-
-  return data.map((value: any, index: number) => ({ 
-    isim: `Veri ${index + 1}`,
-    [isim]: value 
-  }));
+  degerler?: { [key: string]: string | number }[];
 }
 
 export const GostergeOlustur = <TDurum extends BaseGostergeDurum>({
   durum,
-  getDataAsync,
 }: {
   durum: TDurum;
-  getDataAsync: () => Promise<any>;
 }): ReactElement => {
-  const [data, setData] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await getDataAsync();
-        setData(fetchedData);
-      } catch (error) {
-        console.error('Veri yükleme hatası:', error);
-        setData(null);
-      }
-    };
-
-    fetchData();
-  }, [getDataAsync]);
-
-  if (data === null) {
-    return <div>Yükleniyor...</div>;
-  }
-
-  if (typeof data === 'number' || typeof data === 'string') {
+  if (durum.grafikTipi === 'yok' || !durum.degerler) {
     return (
       <div>
-        {durum.isim}: {data}
+        {durum.isim}: {durum.degerler?.toString() ?? 'Veri yok'}
       </div>
     );
   }
 
-  const getChildren = (): ReactElement[] => {
-    if (data.length === 0 || !data[0]) {
+  const getChildren = () => {
+    if (!Array.isArray(durum.degerler) || durum.degerler.length === 0) {
       return [];
     }
 
@@ -88,8 +55,7 @@ export const GostergeOlustur = <TDurum extends BaseGostergeDurum>({
       case 'area':
         return [<Area key="area" dataKey={durum.isim} type="monotone" fill="#ffc658" stroke="#8884d8" />];
       case 'composed':
-        const keys = Object.keys(data[0]).filter(key => key !== 'isim');
-  
+        const keys = Object.keys(durum.degerler[0]).filter(key => key !== 'isim');
         return [
           <Bar key="bar" dataKey={keys[0]} fill="#8884d8" />,
           <Line key="line" dataKey={keys[1]} type="monotone" stroke="#82ca9d" strokeWidth={3} />,
@@ -105,7 +71,7 @@ export const GostergeOlustur = <TDurum extends BaseGostergeDurum>({
       <ComposedChart
         width={500}
         height={400}
-        data={data}
+        data={durum.degerler}
         margin={{
           top: 20,
           right: 20,
@@ -143,13 +109,16 @@ export const useGosterge = <TDurum extends BaseGostergeDurum>() => {
           isim: gosterge.isim,
           getNode: (durum: TDurum) => (
             <GostergeOlustur
-              durum={durum}
-              getDataAsync={async () => formatData(gosterge.degerler, gosterge.tur, gosterge.isim)}
+              durum={{
+                ...durum,
+                degerler: gosterge.degerler
+              }}
             />
           ),
           varsayilanDurum: {
             isim: gosterge.isim,
             grafikTipi: gosterge.grafikTipi,
+            degerler: gosterge.degerler,
           } as TDurum,
           varsayilanBaslik: (
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -158,9 +127,7 @@ export const useGosterge = <TDurum extends BaseGostergeDurum>() => {
               ) : gosterge.grafikTipi === 'area' ? (
                 <AiOutlineAreaChart style={{ marginRight: 8 }} />
               ) : gosterge.grafikTipi === 'composed' ? (
-                <>
-                  <MdAreaChart style={{ marginRight: 8 }} />
-                </>
+                <MdAreaChart style={{ marginRight: 8 }} />
               ) : (
                 <AiOutlineLineChart style={{ marginRight: 8 }} />
               )}
@@ -182,7 +149,6 @@ export const useGosterge = <TDurum extends BaseGostergeDurum>() => {
               </Select>
             </div>
           ),
-          getDataAsync: async () => formatData(gosterge.degerler, gosterge.tur, gosterge.isim),
         }));
 
         setGostergeler(gostergeler);

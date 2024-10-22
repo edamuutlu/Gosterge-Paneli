@@ -58,7 +58,7 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
 
     setLayouts(initialLayouts);
 
-    const timer = setTimeout(() => setYukleniyor(false), 100);
+    const timer = setTimeout(() => setYukleniyor(false), 250);
     return () => clearTimeout(timer);
   }, [gostergeler]);
 
