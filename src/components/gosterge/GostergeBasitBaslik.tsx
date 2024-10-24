@@ -1,15 +1,18 @@
-import { theme, Typography } from 'antd';
-import { ReactNode } from 'react';
+import { theme, Typography } from "antd";
+import { AiOutlineLineChart } from "react-icons/ai";
 
-type Props = { children: ReactNode };
+type Props = { gosterge: String };
 
-const GostergeBasitBaslik = ({ children }: Props) => {
+const GostergeBasitBaslik = ({ gosterge }: Props) => {
   const { useToken } = theme;
   const { token } = useToken();
 
   return (
     <Typography.Text strong type="secondary">
-      {children}
+      <div style={{ display: "flex", alignItems: "center", fontSize: 14}}>
+        <AiOutlineLineChart size={18} style={{ marginRight: 8 }} />
+        {gosterge}
+      </div>
     </Typography.Text>
   );
 };

@@ -57,6 +57,7 @@ code {
 /* GostergeKonteyner.tsx başlangıç */
 .ust-container {
   display: flex;
+  gap: 12px;
   align-items: center;
 }
 .ust-baslik {
@@ -67,6 +68,9 @@ code {
 
 .gosterge-butonlar {
   min-height: 25px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .gosterge-container {
@@ -84,13 +88,13 @@ code {
 }
 
 .gosterge-ust {
-  padding: 2px 4px;
+  padding: 18px 14px 0 14px;
 }
 
 .gosterge-icerik {
   display: flex;
   overflow: auto;
-  height: 100%;
+  height: 95%;
 }
 
 .gosterge-icerik-item {
@@ -101,5 +105,5 @@ code {
 /* GostergeKonteyner.tsx bitiş */
 
 :where(.css-dev-only-do-not-override-1hpnbz2).ant-card .ant-card-body{
-  height: 95%;
+  height: 100%;
 }

@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import GostergeYukleyici from "./GostergeYukleyici";
-import GostergeBasitBaslik from "./GostergeBasitBaslik";
-import { App, Button, Card, Divider, Tag } from "antd";
+import { App, Button, Card } from "antd";
 import { IGosterge } from "./IGosterge";
 import { BiArrowBack } from "react-icons/bi";
-import { MdEdit, MdSave } from "react-icons/md";
+import { MdSave } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
 import ButtonGroup from "antd/es/button/button-group";
 
 const GostergeKonteyner = ({
@@ -73,7 +73,7 @@ const GostergeKonteyner = ({
   const ustKisim = (
     <div className="ust-container">
       <div className={`${dragHandleSinifAdi} ust-baslik`}>
-        <GostergeBasitBaslik>{baslik}</GostergeBasitBaslik>
+          {baslik}
       </div>
       <div className="gosterge-butonlar">
         {gosterge.getDuzenle && (
@@ -85,16 +85,15 @@ const GostergeKonteyner = ({
                   setDuzenleniyor(true);
                 }}
                 type="link"
-                icon={<MdEdit size={20}/>}
+                icon={<FiEdit size={24}/>}
               />
             ) : (
-              <div className="flex">
                 <ButtonGroup>
                   <Button
                     title="İptal"
                     onClick={() => setDuzenleniyor(false)}
                     type="link"
-                    icon={<BiArrowBack size={20}/>}
+                    icon={<BiArrowBack size={24}/>}
                   />
                   <Button
                     title="Kaydet"
@@ -112,10 +111,9 @@ const GostergeKonteyner = ({
                       }
                     }}
                     type="link"
-                    icon={<MdSave size={20}/>}
+                    icon={<MdSave size={24}/>}
                   />
                 </ButtonGroup>
-              </div>
             )}
           </>
         )}
@@ -132,18 +130,11 @@ const GostergeKonteyner = ({
   }
   return (
     <div className="gosterge-container">
-      {gosterge.isim && (
-        <span className="gosterge-baslik">
-          <Tag color="#108ee9">{gosterge.isim}</Tag>
-        </span>
-      )}
       <div className="gosterge-ust">{ustKisim}</div>
-      <Divider style={{margin:0}}/>
       <div className={"gosterge-icerik"}>
         <div className="gosterge-icerik-item">
           <Card
-            style={{ height: "95%" }}
-            title={gosterge.isim}
+            style={{ height: "100%", border: "none" }}
           >
             {node}
           </Card>
