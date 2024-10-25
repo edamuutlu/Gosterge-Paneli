@@ -140,6 +140,35 @@ const grafikAData = async (): Promise<GrafikData[]> => {
   ];
 };
 
+const varsayilanSorguParam: GostergeDurum[] = [
+  {
+    isim: "Aylık Satışlar",
+    grafikTipi: "line",
+    degerler: [
+      { isim: "Ocak", "Aylık Satışlar": 4000 },
+      { isim: "Şubat", "Aylık Satışlar": 3000 },
+      { isim: "Mart", "Aylık Satışlar": 5000 },
+      { isim: "Nisan", "Aylık Satışlar": 4500 },
+      { isim: "Mayıs", "Aylık Satışlar": 6000 },
+      { isim: "Haziran", "Aylık Satışlar": 5500 },
+      { isim: "Temmuz", "Aylık Satışlar": 4000 },
+      { isim: "Ağustos", "Aylık Satışlar": 3000 },
+    ],
+  },
+  {
+    isim: "Aylık Satışlar",
+    grafikTipi: "bar",
+    degerler: [
+      { isim: "Ocak", "Aylık Satışlar": 4000 },
+      { isim: "Şubat", "Aylık Satışlar": 3000 },
+      { isim: "Mart", "Aylık Satışlar": 5000 },
+      { isim: "Nisan", "Aylık Satışlar": 4500 },
+      { isim: "Mayıs", "Aylık Satışlar": 6000 },
+      { isim: "Haziran", "Aylık Satışlar": 5500 },
+    ],
+  },
+];
+
 export const useGosterge = <T extends GostergeDurum>() => {
   const [gostergeler, setGostergeler] = useState<IGosterge<T>[]>([]);
   const [yukleniyor, setYukleniyor] = useState(true);
@@ -155,16 +184,11 @@ export const useGosterge = <T extends GostergeDurum>() => {
             isim: gosterge.isim,
             getNode: (durum: T) => (
               <GostergeOlustur
-                durum={{ ...durum, degerler: gosterge.degerler }}
+                durum={{ ...durum}}
               />
             ),
-            varsayilanDurum: {
-              isim: gosterge.isim,
-              grafikTipi: Array.isArray(gosterge.degerler) ? "line" : "yok",
-              degerler: gosterge.degerler,
-              grafikCizimTipi: {},
-            } as T,
-            varsayilanBaslik: <GostergeBasitBaslik gosterge={gosterge.isim} />,
+            varsayilanDurum: varsayilanSorguParam[1] as T,
+            varsayilanBaslik: <GostergeBasitBaslik gostergeIsim={gosterge.isim} />,
             varsayilanLayout: {
               w: 2,
               h: 3,

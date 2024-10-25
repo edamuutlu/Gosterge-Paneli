@@ -23,14 +23,11 @@ const GostergeKonteyner = ({
   
   const [gostergeNode, setGostergeNode] = useState<ReactNode>(null);
   const [duzenlenenDurum, setDuzenlenenDurum] = useState<any>();
-  const [yukleniyor, setYukleniyor] = useState(true);
 
   useEffect(() => {
     const getDurum = async () => {
       if (gosterge.gostergeId) {
         try {
-          setYukleniyor(true);
-          
           const r = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
           
           if (r) {
@@ -44,25 +41,15 @@ const GostergeKonteyner = ({
           setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
           setDuzenlenenDurum(suAnkiDurum.current);
         } catch (error) {
-          console.error('Gösterge ayar yüklenemedi:', error);
           message.error('Gösterge ayar yüklenemedi');
           suAnkiDurum.current = gosterge.varsayilanDurum;
           setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
-        } finally {
-          setYukleniyor(false);
-        }
+        } 
       }
     };
     
     getDurum();
   }, [gosterge, message]);
-  
-
-  useEffect(() => {
-    if (!yukleniyor) {
-      setGostergeNode(gosterge.getNode(duzenleniyor ? duzenlenenDurum : suAnkiDurum.current, null));
-    }
-  }, [duzenlenenDurum, duzenleniyor, gosterge, yukleniyor]);
 
   useEffect(() => {
     if (duzenleniyor) {
@@ -121,7 +108,7 @@ const GostergeKonteyner = ({
     </div>
   );
 
-  let node: ReactNode = yukleniyor ? <GostergeYukleyici /> : gostergeNode;
+  let node: ReactNode = gostergeNode || <GostergeYukleyici />;
   if (duzenleniyor && gosterge.getDuzenle) {
     node = gosterge.getDuzenle({
       durum: duzenlenenDurum,
@@ -131,7 +118,7 @@ const GostergeKonteyner = ({
   return (
     <div className="gosterge-container">
       <div className="gosterge-ust">{ustKisim}</div>
-      <div className={"gosterge-icerik"}>
+      <div className="gosterge-icerik">
         <div className="gosterge-icerik-item">
           <Card
             style={{ height: "100%", border: "none" }}

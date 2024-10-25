@@ -1,9 +1,9 @@
 import { theme, Typography } from "antd";
 import { AiOutlineLineChart } from "react-icons/ai";
 
-type Props = { gosterge: String };
+type Props = { gostergeIsim: String };
 
-const GostergeBasitBaslik = ({ gosterge }: Props) => {
+const GostergeBasitBaslik = ({ gostergeIsim }: Props) => {
   const { useToken } = theme;
   const { token } = useToken();
 
@@ -11,7 +11,7 @@ const GostergeBasitBaslik = ({ gosterge }: Props) => {
     <Typography.Text strong type="secondary">
       <div style={{ display: "flex", alignItems: "center", fontSize: 14}}>
         <AiOutlineLineChart size={18} style={{ marginRight: 8 }} />
-        {gosterge}
+        {gostergeIsim}
       </div>
     </Typography.Text>
   );

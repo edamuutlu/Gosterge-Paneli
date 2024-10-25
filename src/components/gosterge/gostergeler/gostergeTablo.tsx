@@ -28,18 +28,30 @@ const varsayilanSorguParam: Lotlar[] = [
   { lotId: '2', lotName: 'Lot 2', quantity: 50, status: 'inactive', createdAt: '2024-02-15' },
 ];
 
-const GostergeTablo = (durum: Lotlar) => {
+interface GostergeTabloProps {
+  durum: Lotlar;
+}
+
+export const GostergeTablo: React.FC<GostergeTabloProps> = ({ durum }) => {
   return (
     <div style={{ height: '100%', width: '100%', position: 'absolute' }}>
       <Table
         className="p-0 me-3"
         style={{ maxHeight: 200 }}
-        // {...tablo.tabloProps}
-        rowKey={r => r.lotId}
+        rowKey={(r: Lotlar) => r.lotId ?? ''}
+        dataSource={[durum]}
+        columns={[
+          { title: 'Lot ID', dataIndex: 'lotId', key: 'lotId' },
+          { title: 'Lot Name', dataIndex: 'lotName', key: 'lotName' },
+          { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
+          { title: 'Status', dataIndex: 'status', key: 'status' },
+          { title: 'Created At', dataIndex: 'createdAt', key: 'createdAt' },
+        ]}
       />
     </div>
   );
 };
+
 
 /* -------------------------------------------------------------------------- */
 /*                                 Alternatif                                 */
@@ -56,7 +68,7 @@ const varsayilanLayout: Layout = {
 
 export const gostergeTablo: IGosterge<Lotlar> = {
   isim: 'Lotlar',
-  getNode: (durum, oncekiDurum) => <GostergeTablo {...durum} />,
+  getNode: (durum, oncekiDurum) => <GostergeTablo durum={durum} />,
   varsayilanDurum: varsayilanSorguParam[0], // Sadece ilk Lot objesini kullanmak için
   varsayilanLayout,
   getDuzenle: (gdp: IGostergeDuzenleProps<Lotlar>) => <GostergeTabloDuzenle {...gdp} />,
