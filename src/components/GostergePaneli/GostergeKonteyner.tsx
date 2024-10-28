@@ -107,7 +107,6 @@ const GostergeKonteyner = ({
       </div>
     </div>
   );
-
   let node: ReactNode = gostergeNode || <GostergeYukleyici />;
   if (duzenleniyor && gosterge.getDuzenle) {
     node = gosterge.getDuzenle({
@@ -115,6 +114,7 @@ const GostergeKonteyner = ({
       setDurum: setDuzenlenenDurum,
     });
   }
+
   return (
     <div className="gosterge-container">
       <div className="gosterge-ust">{ustKisim}</div>

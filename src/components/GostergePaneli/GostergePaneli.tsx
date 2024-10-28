@@ -16,30 +16,43 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
   const [layouts, setLayouts] = useState<Layouts>();
   const [yukleniyor, setYukleniyor] = useState(true);
 
-  const onLayoutChange = useCallback((currentLayout: Layout[], tumLayoutlar: Layouts) => {
-    setLayouts((oncekiLayout) => {
-      const guncellenmisLayoutlar = { ...oncekiLayout };
-  
-      Object.keys(tumLayoutlar).forEach((breakpoint) => {
-        guncellenmisLayoutlar[breakpoint] = tumLayoutlar[breakpoint].map((item) => ({
-          ...item,
-          x: item.x || 0,
-          y: item.y || 0,
-          w: Math.min(Math.max(item.w || 3, item.minW || 1), item.maxW || 6),
-          h: Math.min(Math.max(item.h || 2, item.minH || 2), item.maxH || 6),
-          minW: item.minW || 1,
-          maxW: item.maxW || 6,
-          minH: item.minH || 2,
-          maxH: item.maxH || 6,
-          static: item.static || false,
-        }));
+  const onLayoutChange = useCallback(
+    (currentLayout: Layout[], tumLayoutlar: Layouts) => {
+      setLayouts((oncekiLayout) => {
+        const guncellenmisLayoutlar = { ...oncekiLayout };
+
+        Object.keys(tumLayoutlar).forEach((breakpoint) => {
+          guncellenmisLayoutlar[breakpoint] = tumLayoutlar[breakpoint].map(
+            (item) => ({
+              ...item,
+              x: item.x || 0,
+              y: item.y || 0,
+              w: Math.min(
+                Math.max(item.w || 3, item.minW || 1),
+                item.maxW || 6
+              ),
+              h: Math.min(
+                Math.max(item.h || 2, item.minH || 2),
+                item.maxH || 6
+              ),
+              minW: item.minW || 1,
+              maxW: item.maxW || 6,
+              minH: item.minH || 2,
+              maxH: item.maxH || 6,
+              static: item.static || false,
+            })
+          );
+        });
+
+        localStorage.setItem(
+          "kaydedilmisLayoutlar",
+          JSON.stringify(guncellenmisLayoutlar)
+        );
+        return guncellenmisLayoutlar;
       });
-  
-      localStorage.setItem("kaydedilmisLayoutlar", JSON.stringify(guncellenmisLayoutlar)); 
-      return guncellenmisLayoutlar;
-    });
-  }, []);
-  
+    },
+    []
+  );
 
   useEffect(() => {
     const kaydedilmisLayoutlar = localStorage.getItem("kaydedilmisLayoutlar");
@@ -48,8 +61,20 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
       i: gosterge.gostergeId || `${index}`,
       x: gosterge.varsayilanLayout?.x ?? 0,
       y: gosterge.varsayilanLayout?.y ?? 0,
-      w: Math.min(Math.max(gosterge.varsayilanLayout?.w ?? 3, gosterge.varsayilanLayout?.minW ?? 1), gosterge.varsayilanLayout?.maxW ?? 6),
-      h: Math.min(Math.max(gosterge.varsayilanLayout?.h ?? 2, gosterge.varsayilanLayout?.minH ?? 2), gosterge.varsayilanLayout?.maxH ?? 6),
+      w: Math.min(
+        Math.max(
+          gosterge.varsayilanLayout?.w ?? 3,
+          gosterge.varsayilanLayout?.minW ?? 1
+        ),
+        gosterge.varsayilanLayout?.maxW ?? 6
+      ),
+      h: Math.min(
+        Math.max(
+          gosterge.varsayilanLayout?.h ?? 2,
+          gosterge.varsayilanLayout?.minH ?? 2
+        ),
+        gosterge.varsayilanLayout?.maxH ?? 6
+      ),
       minW: gosterge.varsayilanLayout?.minW ?? 1,
       maxW: gosterge.varsayilanLayout?.maxW ?? 6,
       minH: gosterge.varsayilanLayout?.minH ?? 2,
@@ -59,7 +84,7 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
 
     const baslangicLayout: Layouts = kaydedilmisLayoutlar
       ? JSON.parse(kaydedilmisLayoutlar)
-      : ['lg', 'md', 'sm', 'xs', 'xxs'].reduce((acc, size) => {
+      : ["lg", "md", "sm", "xs", "xxs"].reduce((acc, size) => {
           acc[size] = varsayilanLayout;
           return acc;
         }, {} as Layouts);
@@ -70,9 +95,9 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
     return () => clearTimeout(zamanlayici);
   }, [gostergeler]);
 
-  if (yukleniyor || !layouts) {
-    return <Spin size="large" className="spin-layout" />;
-  }
+   if (yukleniyor || !layouts) {
+     return <Spin size="large" className="spin-layout" />;
+   }
 
   return (
     <div className="grid-linechart">
@@ -85,11 +110,11 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
         cols={{ lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 }}
         rowHeight={150}
         autoSize={true}
-        resizeHandles={['se', 'ne']}
+        resizeHandles={["se", "ne"]}
       >
         {gostergeler.map((gosterge, indis) => (
-          <div 
-            key={gosterge.gostergeId || `${indis}`} 
+          <div
+            key={gosterge.gostergeId || `${indis}`}
             className={gosterge.gostergeId || `${indis}`}
           >
             <GostergeKonteyner
