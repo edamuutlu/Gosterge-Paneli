@@ -33,6 +33,7 @@ const GostergeDataYukleyici = <TData,>({
   return <>{data ? getNode(data) : <></>}</>;
 };
 
+
 type GostergeNufusSayisiDurumString = GostergeDurum & {
   gosterilenUlkeler?: string;
 };
@@ -43,6 +44,7 @@ const getUlkeNufusStringAsync = async (
   return "Türkiye";
 };
 
+
 type GostergeNufusSayisiDurumNumber = GostergeDurum & {
   gosterilenNufus?: number;
 }
@@ -52,16 +54,18 @@ const getUlkeNufusNumberAsync = async (
   return 10000000;
 };
 
+
 type GostergeNufusSayisiDurumGrafik = GostergeDurum & {
   gosterilenUlkeler?: Ulkeler[];
 };
 
-const getUlkeNufusAsync = async (filtre: GostergeNufusSayisiDurumGrafik) => {
+const getUlkeNufusGrafikAsync = async (filtre: GostergeNufusSayisiDurumGrafik) => {
   return [
     { ulke: "Türkiye", nufus: 100000000 },
     { ulke: "Suriye", nufus: 24000000 },
   ];
 };
+
 
 const gostergeNufusSayisiString: IGosterge<GostergeNufusSayisiDurumString> = {
   gostergeId: "3",
@@ -72,7 +76,7 @@ const gostergeNufusSayisiString: IGosterge<GostergeNufusSayisiDurumString> = {
   getNode: (durum) => (
     <GostergeDataYukleyici
       dataYukleAsync={() => getUlkeNufusStringAsync(durum)}
-      getNode={(data) => <GostergeOlustur data={data.replace(`"`, '')} durum={durum} />}
+      getNode={(data) => <GostergeOlustur data={data} durum={durum} />}
     />
   ),
   getDuzenle: ({ durum, setDurum }) => (
@@ -105,7 +109,7 @@ const gostergeNufusSayisiGrafik: IGosterge<GostergeNufusSayisiDurumGrafik> = {
   varsayilanDurum: { gosterilenUlkeler: undefined, grafikTipi: "bar" },
   getNode: (durum) => (
     <GostergeDataYukleyici
-      dataYukleAsync={() => getUlkeNufusAsync(durum)}
+      dataYukleAsync={() => getUlkeNufusGrafikAsync(durum)}
       getNode={(data) => <GostergeOlustur data={data} durum={durum} />}
     />
   ),
