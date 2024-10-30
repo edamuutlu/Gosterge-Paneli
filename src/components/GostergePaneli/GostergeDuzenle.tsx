@@ -1,4 +1,3 @@
-import React from 'react';
 import { Form, Input, Select, Space } from 'antd';
 import { GostergeDurum } from './GostergeIcerikOlustur';
 

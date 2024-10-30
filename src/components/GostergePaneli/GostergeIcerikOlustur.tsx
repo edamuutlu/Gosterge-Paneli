@@ -1,16 +1,5 @@
 import { ReactElement } from "react";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  Line,
-  Bar,
-  Area,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { ResponsiveContainer, ComposedChart, Line, Bar, Area, CartesianGrid, XAxis, YAxis, Tooltip, Legend, } from "recharts";
 import { Alert } from "antd";
 
 export type GrafikTipi = "line" | "bar" | "area" | "composed" | "yok";
@@ -22,19 +11,9 @@ export interface GostergeDurum {
 }
 
 const grafikKomponentleri = {
-  line: (key: string) => (
-    <Line key={key} dataKey={key} type="monotone" stroke="#8884d8" />
-  ),
+  line: (key: string) => ( <Line key={key} dataKey={key} type="monotone" stroke="#8884d8" /> ),
   bar: (key: string) => <Bar key={key} dataKey={key} fill="#82ca9d" />,
-  area: (key: string) => (
-    <Area
-      key={key}
-      dataKey={key}
-      type="monotone"
-      fill="#ffc658"
-      stroke="#8884d8"
-    />
-  ),
+  area: (key: string) => ( <Area key={key} dataKey={key} type="monotone" fill="#ffc658" stroke="#8884d8"/> ),
 };
 
 export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
@@ -47,6 +26,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
   if (!durum.isim) {
     durum.isim = "Gosterge";
   }
+
   if (!data) {
     return (
       <Alert
@@ -69,6 +49,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
       </div>
     );
   }
+  
   const dataKeys =
     data && Array.isArray(data) && data.length > 0
       ? Object.keys(data[0]).filter((key) => key !== "ulke")
