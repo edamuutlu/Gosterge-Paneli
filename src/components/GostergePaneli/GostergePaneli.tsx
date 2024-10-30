@@ -28,16 +28,16 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
               x: item.x || 0,
               y: item.y || 0,
               w: Math.min(
-                Math.max(item.w || 3, item.minW || 1),
+                Math.max(item.w || 3, item.minW || 2),
                 item.maxW || 6
               ),
               h: Math.min(
-                Math.max(item.h || 2, item.minH || 2),
+                Math.max(item.h || 2, item.minH || 3),
                 item.maxH || 6
               ),
-              minW: item.minW || 1,
+              minW: item.minW || 2,
               maxW: item.maxW || 6,
-              minH: item.minH || 2,
+              minH: item.minH || 3,
               maxH: item.maxH || 6,
               static: item.static || false,
             })
@@ -64,20 +64,20 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
       w: Math.min(
         Math.max(
           gosterge.varsayilanLayout?.w ?? 3,
-          gosterge.varsayilanLayout?.minW ?? 1
+          gosterge.varsayilanLayout?.minW ?? 2
         ),
         gosterge.varsayilanLayout?.maxW ?? 6
       ),
       h: Math.min(
         Math.max(
           gosterge.varsayilanLayout?.h ?? 2,
-          gosterge.varsayilanLayout?.minH ?? 2
+          gosterge.varsayilanLayout?.minH ?? 3
         ),
         gosterge.varsayilanLayout?.maxH ?? 6
       ),
-      minW: gosterge.varsayilanLayout?.minW ?? 1,
+      minW: gosterge.varsayilanLayout?.minW ?? 2,
       maxW: gosterge.varsayilanLayout?.maxW ?? 6,
-      minH: gosterge.varsayilanLayout?.minH ?? 2,
+      minH: gosterge.varsayilanLayout?.minH ?? 3,
       maxH: gosterge.varsayilanLayout?.maxH ?? 6,
       static: gosterge.varsayilanLayout?.static ?? false,
     }));

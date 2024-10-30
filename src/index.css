@@ -16,20 +16,20 @@ code {
 /* index.tsx başlangıç */
 .gosterge-drag-handle {
   cursor: grab;
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: rgb(244, 244, 244);
+  border: 1px solid rgb(215, 215, 215);
   padding: 8px;
   border-radius: 4px;
   transition: background-color 0.3s;
 }
 
 .gosterge-drag-handle:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(230, 230, 230);
 }
 
 .gosterge-drag-handle:active {
   cursor: grabbing;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgb(215, 215, 215);
 }
 
 .spin .ant-spin {
@@ -107,3 +107,23 @@ code {
 :where(.css-dev-only-do-not-override-1hpnbz2).ant-card .ant-card-body{
   height: 100%;
 }
+
+
+/* GostergeIcerikOlustur.tsx baslangıç */
+.custom-tooltip {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 4px 10px 4px;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #cdcfd3;
+  pointer-events: all;
+}
+
+.recharts-legend-item {
+  cursor: pointer;
+}
+/* GostergeIcerikOlustur.tsx bitiş */
