@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Select, Space } from 'antd';
-import { GostergeDurum } from './GostergeOlustur';
+import { GostergeDurum } from './GostergeIcerikOlustur';
 
 interface GostergeDuzenleProps<T extends GostergeDurum> {
   durum: T;
@@ -56,7 +56,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
             >
               <Select.Option value="bar">Bar Grafik</Select.Option>
               <Select.Option value="line">Çizgi Grafik</Select.Option>
-              <Select.Option value="pie">Pasta Grafik</Select.Option>
+              <Select.Option value="area">Alan Grafik</Select.Option>
             </Select>
           </Form.Item>
         )}

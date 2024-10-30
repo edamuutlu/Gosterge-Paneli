@@ -37,7 +37,7 @@ const grafikKomponentleri = {
   ),
 };
 
-export const GostergeOlustur = <T extends GostergeDurum, TData>({
+export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
   durum,
   data,
 }: {
@@ -74,21 +74,11 @@ export const GostergeOlustur = <T extends GostergeDurum, TData>({
       ? Object.keys(data[0]).filter((key) => key !== "ulke")
       : [];
 
-  const children =
-    durum.grafikTipi === "composed"
-      ? dataKeys.map((key) => {
-          const grafikTipi = durum.grafikCizimTipi?.[key] || durum.grafikTipi;
-          const grafikComponent =
-            grafikKomponentleri[grafikTipi as keyof typeof grafikKomponentleri];
-          return grafikComponent ? grafikComponent(key) : null;
-        })
-      : dataKeys.map((key) => {
-          const grafikComponent =
-            grafikKomponentleri[
-              durum.grafikTipi as keyof typeof grafikKomponentleri
-            ];
-          return grafikComponent ? grafikComponent(key) : null;
-        });
+  const children = dataKeys.map((key) => {
+    const grafikComponent =
+      grafikKomponentleri[durum.grafikTipi as keyof typeof grafikKomponentleri];
+    return grafikComponent ? grafikComponent(key) : null;
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
