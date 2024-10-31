@@ -27,14 +27,8 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
               ...item,
               x: item.x || 0,
               y: item.y || 0,
-              w: Math.min(
-                Math.max(item.w || 3, item.minW || 2),
-                item.maxW || 6
-              ),
-              h: Math.min(
-                Math.max(item.h || 2, item.minH || 3),
-                item.maxH || 6
-              ),
+              w: Math.min( Math.max(item.w || 3, item.minW || 2), item.maxW || 6 ),
+              h: Math.min( Math.max(item.h || 2, item.minH || 3), item.maxH || 6 ),
               minW: item.minW || 2,
               maxW: item.maxW || 6,
               minH: item.minH || 3,
@@ -44,10 +38,8 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
           );
         });
 
-        localStorage.setItem(
-          "kaydedilmisLayoutlar",
-          JSON.stringify(guncellenmisLayoutlar)
-        );
+        localStorage.setItem("kaydedilmisLayoutlar", JSON.stringify(guncellenmisLayoutlar));
+
         return guncellenmisLayoutlar;
       });
     },
@@ -62,19 +54,9 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
       x: gosterge.varsayilanLayout?.x ?? 0,
       y: gosterge.varsayilanLayout?.y ?? 0,
       w: Math.min(
-        Math.max(
-          gosterge.varsayilanLayout?.w ?? 3,
-          gosterge.varsayilanLayout?.minW ?? 2
-        ),
-        gosterge.varsayilanLayout?.maxW ?? 6
-      ),
+         Math.max( gosterge.varsayilanLayout?.w ?? 3, gosterge.varsayilanLayout?.minW ?? 2 ), gosterge.varsayilanLayout?.maxW ?? 6 ),
       h: Math.min(
-        Math.max(
-          gosterge.varsayilanLayout?.h ?? 2,
-          gosterge.varsayilanLayout?.minH ?? 3
-        ),
-        gosterge.varsayilanLayout?.maxH ?? 6
-      ),
+        Math.max( gosterge.varsayilanLayout?.h ?? 2, gosterge.varsayilanLayout?.minH ?? 3 ), gosterge.varsayilanLayout?.maxH ?? 6 ),
       minW: gosterge.varsayilanLayout?.minW ?? 2,
       maxW: gosterge.varsayilanLayout?.maxW ?? 6,
       minH: gosterge.varsayilanLayout?.minH ?? 3,
