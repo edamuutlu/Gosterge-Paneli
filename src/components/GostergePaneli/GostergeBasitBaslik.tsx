@@ -10,8 +10,7 @@ const GostergeBasitBaslik = ({ gostergeIsim, grafikTipi }: Props) => {
   const { useToken } = theme;
   const { token } = useToken();
 
-  // Grafik tipine göre ikon belirleme
-  const renderIcon = () => {
+  const ikonGoster  = () => {
     switch (grafikTipi) {
       case 'line':
         return <AiOutlineLineChart size={18} style={{ marginRight: 8 }} />;
@@ -29,7 +28,7 @@ const GostergeBasitBaslik = ({ gostergeIsim, grafikTipi }: Props) => {
   return (
     <Typography.Text strong type="secondary">
       <div style={{ display: "flex", alignItems: "center", fontSize: 14 }}>
-        {renderIcon()}
+        {ikonGoster ()}
         {gostergeIsim}
       </div>
     </Typography.Text>

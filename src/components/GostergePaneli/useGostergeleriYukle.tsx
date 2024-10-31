@@ -60,8 +60,8 @@ const getUlkeNufusGrafikAsync = async (
   filtre: GostergeNufusSayisiDurumGrafik
 ) => {
   return [
-    { ulke: "Türkiye", kita: "Avrupa", nufus: 1000, yil: 2020 },
-    { ulke: "Suriye", kita: "Asya", nufus: 2400, yil: 1900 },
+    { ulke: "Türkiye", kita: "Avrupa", dogum: 5000, olum: 2020 },
+    { ulke: "Suriye", kita: "Asya", dogum: 2500, olum: 1900 },
   ];
 };
 
@@ -139,7 +139,7 @@ export const gostergeNufusSayisiNumber: IGosterge<GostergeNufusSayisiDurumNumber
     getBaslik: (durum) => (
       <GostergeBasitBaslik gostergeIsim={durum.isim ? durum.isim : "Gosterge"} grafikTipi={durum.grafikTipi as GrafikTipi}/>
     ),
-    varsayilanDurum: { gosterilenUlkeler: undefined, grafikTipi: "bar", xAxisDataKey: "ulke" },
+    varsayilanDurum: { gosterilenUlkeler: undefined, grafikTipi: "bar", xEkseniVeriAnahtari : "ulke" },
     getNode: (durum) => (
       <GostergeDataYukleyici
         dataYukleAsync={() => getUlkeNufusGrafikAsync(durum)}

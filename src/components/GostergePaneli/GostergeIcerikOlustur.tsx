@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 import { ResponsiveContainer, ComposedChart, Line, Bar, Area, CartesianGrid, XAxis, YAxis, Tooltip, 
   Legend, TooltipProps, DefaultTooltipContent} from "recharts";
-import { Alert, Button, Modal, Typography } from "antd";
+import { Alert, Button, message, Modal, Typography } from "antd";
 
 export type GrafikTipi = "line" | "bar" | "area" | "composed" | "yok";
 
@@ -9,8 +9,10 @@ export interface GostergeDurum {
   isim?: string;
   grafikTipi?: GrafikTipi;
   grafikCizimTipi?: Record<string, GrafikTipi>;
-  xAxisDataKey?: string;
+  xEkseniVeriAnahtari ?: string;
 }
+
+const varsayilanRenkler  = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#387908"];
 
 const grafikKomponentleri = {
   line: (key: string, index: number) => (
@@ -19,7 +21,7 @@ const grafikKomponentleri = {
       dataKey={key}
       type="monotone"
       strokeWidth={3}
-      stroke={defaultColors[index % defaultColors.length]}
+      stroke={varsayilanRenkler[index % varsayilanRenkler.length]}
     />
   ),
   bar: (key: string, index: number) => (
@@ -27,7 +29,7 @@ const grafikKomponentleri = {
       key={key}
       dataKey={key}
       barSize={50}
-      fill={defaultColors[index % defaultColors.length]}
+      fill={varsayilanRenkler[index % varsayilanRenkler.length]}
     />
   ),
   area: (key: string, index: number) => (
@@ -35,30 +37,28 @@ const grafikKomponentleri = {
       key={key}
       dataKey={key}
       type="monotone"
-      fill={defaultColors[index % defaultColors.length]}
-      stroke={defaultColors[(index + 1) % defaultColors.length]}
+      fill={varsayilanRenkler[index % varsayilanRenkler.length]}
+      stroke={varsayilanRenkler[(index + 1) % varsayilanRenkler.length]}
       fillOpacity={0.3}
     />
   ),
 };
 
-const defaultColors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#387908"];
-
 const CustomToolTip = ({
   active,
   payload,
   label,
-  setIsModalVisible,
+  setModalGorunurluk,
   ...props
 }: TooltipProps<any, any> & {
-  setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setModalGorunurluk: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   if (!active || !payload || !payload.length) {
     return null;
   }
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const modalGoster = () => {
+    setModalGorunurluk(true);
   };
 
   return (
@@ -69,7 +69,7 @@ const CustomToolTip = ({
         payload={payload}
         label={label}
       />
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={modalGoster}>
         Detayları Gör
       </Button>
     </div>
@@ -83,15 +83,13 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
   durum: T;
   data: TData;
 }): ReactElement => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const [modalGorunurluk, setModalGorunurluk] = useState(false);
+
+  const modalKapat = () => {
+    setModalGorunurluk(false);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  const xAxisKey = durum.xAxisDataKey || "ulke";
+  const xEkseniAnahtar  = durum.xEkseniVeriAnahtari  || "ulke";
 
   if (!durum.isim) {
     durum.isim = "Gosterge";
@@ -124,7 +122,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
 
   const dataKeys =
   data && Array.isArray(data) && data.length > 0
-    ? Object.keys(data[0]).filter((key) => key !== xAxisKey && typeof data[0][key] !== 'string')
+    ? Object.keys(data[0]).filter((key) => key !== xEkseniAnahtar  && typeof data[0][key] !== 'string')
     : [];
 
   const children =
@@ -151,15 +149,15 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
           margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
         >
           <CartesianGrid stroke="#f5f5f5" />
-          <XAxis dataKey={xAxisKey} />
+          <XAxis dataKey={xEkseniAnahtar } />
           <YAxis />
           <Tooltip
-            content={<CustomToolTip setIsModalVisible={setIsModalVisible} />}
+            content={<CustomToolTip setModalGorunurluk={setModalGorunurluk} />}
             position={{ y: 20 }}
           />
           <Legend
             onClick={(event) => {
-              console.log(event.dataKey);
+              message.info(String(event.dataKey ?? "No data key available"));
             }}
           />
           {children}
@@ -168,9 +166,8 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
 
       <Modal
         title="Detayları Gör"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        open={modalGorunurluk}
+        onCancel={modalKapat}
       >
         <Typography>
           <pre>{JSON.stringify(data, null, 2)}</pre>

@@ -15,30 +15,30 @@ const GostergeDuzenle = <T extends GostergeDurum>({
   setDurum,
   data,
 }: GostergeDuzenleProps<T>): ReactElement => {
-  const isGrafikDurum = "grafikTipi" in durum && durum.grafikTipi !== "yok";
-  const numericKeys = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "number") : [];
-  const allowComposedOption = numericKeys.length >= 2;
-  const xAxisDataKeys = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "string") : [];
+  const grafikVarMi = "grafikTipi" in durum && durum.grafikTipi !== "yok";
+  const sayisalAnahtarlar = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "number") : [];
+  const karmaGrafikMi = sayisalAnahtarlar.length >= 2;
+  const xEkseniAnahtarlar = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "string") : [];
 
-  const handleBaslikDegisim = (yeniBaslik: string) => {
+  const baslikDegistir = (yeniBaslik: string) => {
     setDurum({ ...durum, isim: yeniBaslik });
   };
 
-  const handleGrafikTipiDegisim = (yeniTip: string) => {
-    if (isGrafikDurum) {
-      let yeniXAxisDataKey = durum.xAxisDataKey;
-      if (!xAxisDataKeys.includes(durum.xAxisDataKey!)) {
-        yeniXAxisDataKey = xAxisDataKeys[0] || "";
+  const grafikTipiDegistir = (yeniTip: string) => {
+    if (grafikVarMi) {
+      let yeniXAxisDataKey = durum.xEkseniVeriAnahtari ;
+      if (!xEkseniAnahtarlar.includes(durum.xEkseniVeriAnahtari !)) {
+        yeniXAxisDataKey = xEkseniAnahtarlar[0] || "";
       }
-      setDurum({ ...durum, grafikTipi: yeniTip as any, grafikCizimTipi: yeniTip === "composed" ? {} : undefined, xAxisDataKey: yeniXAxisDataKey });
+      setDurum({ ...durum, grafikTipi: yeniTip as any, grafikCizimTipi: yeniTip === "composed" ? {} : undefined, xEkseniVeriAnahtari : yeniXAxisDataKey });
     }
   };
 
-  const handleXAxisDataKeyDegisim = (yeniKey: string) => {
-    setDurum({ ...durum, xAxisDataKey: yeniKey });
+  const xEkseniAnahtariDegistir = (yeniKey: string) => {
+    setDurum({ ...durum, xEkseniVeriAnahtari : yeniKey });
   };
 
-  const handleTekGrafikTipiDegisim = (key: string, yeniTip: string) => {
+  const tekGrafikTipiDegistir = (key: string, yeniTip: string) => {
     if (durum.grafikTipi === "composed") {
       setDurum({ ...durum, grafikCizimTipi: { ...(durum.grafikCizimTipi || {}), [key]: yeniTip as any } });
     }
@@ -51,36 +51,36 @@ const GostergeDuzenle = <T extends GostergeDurum>({
           <Form.Item label="Gösterge Başlığı" required>
             <Input
               value={durum.isim || ""}
-              onChange={(e) => handleBaslikDegisim(e.target.value)}
+              onChange={(e) => baslikDegistir(e.target.value)}
               placeholder="Gösterge başlığını giriniz"
             />
           </Form.Item>
 
-          {isGrafikDurum && (
+          {grafikVarMi && (
             <Form.Item label="Grafik Tipi" required>
               <Select
                 value={durum.grafikTipi}
-                onChange={handleGrafikTipiDegisim}
+                onChange={grafikTipiDegistir}
                 style={{ width: "100%" }}
               >
                 <Option value="bar">Bar Grafik</Option>
                 <Option value="line">Çizgi Grafik</Option>
                 <Option value="area">Alan Grafik</Option>
-                {allowComposedOption && (
+                {karmaGrafikMi && (
                   <Option value="composed">Karma Grafik</Option>
                 )}
               </Select>
             </Form.Item>
           )}
 
-          {isGrafikDurum && (
+          {grafikVarMi && (
             <Form.Item label="X Ekseni Değeri" required>
               <Select
-                value={durum.xAxisDataKey}
-                onChange={handleXAxisDataKeyDegisim}
+                value={durum.xEkseniVeriAnahtari }
+                onChange={xEkseniAnahtariDegistir}
                 style={{ width: "100%" }}
               >
-                {xAxisDataKeys.map((key) => (
+                {xEkseniAnahtarlar.map((key) => (
                   <Option key={key} value={key}>
                     {key}
                   </Option>
@@ -89,7 +89,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
             </Form.Item>
           )}
 
-          {isGrafikDurum && durum.grafikTipi === "composed" && (
+          {grafikVarMi && durum.grafikTipi === "composed" && (
             <Card
               size="small"
               title="Grafik Bileşenleri"
@@ -100,7 +100,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
                 style={{ width: "100%" }}
                 size="middle"
               >
-                {numericKeys.map((key) => (
+                {sayisalAnahtarlar.map((key) => (
                   <Form.Item
                     key={key}
                     label={`${key} için Grafik Tipi`}
@@ -109,7 +109,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
                     <Select
                       value={durum.grafikCizimTipi?.[key] || "line"}
                       onChange={(value) =>
-                        handleTekGrafikTipiDegisim(key, value)
+                        tekGrafikTipiDegistir(key, value)
                       }
                       style={{ width: "100%" }}
                     >
