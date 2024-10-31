@@ -2,7 +2,10 @@ import GostergeBasitBaslik from "./GostergeBasitBaslik";
 import { IGosterge } from "./IGosterge";
 import GostergeDuzenle from "./GostergeDuzenle";
 import { ReactNode, useEffect, useState } from "react";
-import { GostergeDurum, GostergeIcerikOlustur, GrafikTipi } from "./GostergeIcerikOlustur";
+import {
+  GostergeDurum,
+  GostergeIcerikOlustur,
+} from "./GostergeIcerikOlustur";
 
 type Ulkeler = {
   ulkeIsmi: string;
@@ -77,12 +80,7 @@ const getUlkeNufusGrafikAsync2 = async (
 export const gostergeNufusSayisiString: IGosterge<GostergeNufusSayisiDurumString> =
   {
     gostergeId: "3",
-    getBaslik: (durum) => (
-      <GostergeBasitBaslik
-        gostergeIsim={durum.isim ? durum.isim : "Gosterge"}
-        grafikTipi={durum.grafikTipi as GrafikTipi}
-      />
-    ),
+    getBaslik: (durum) => <GostergeBasitBaslik durum={durum} />,
     varsayilanDurum: { gosterilenUlkeler: undefined },
     getNode: (durum) => (
       <GostergeDataYukleyici
@@ -94,11 +92,7 @@ export const gostergeNufusSayisiString: IGosterge<GostergeNufusSayisiDurumString
       <GostergeDataYukleyici
         dataYukleAsync={() => getUlkeNufusStringAsync(durum)}
         getNode={(data) => (
-          <GostergeDuzenle 
-            durum={durum} 
-            setDurum={setDurum} 
-            data={data} 
-          />
+          <GostergeDuzenle durum={durum} setDurum={setDurum} data={data} />
         )}
       />
     ),
@@ -107,12 +101,7 @@ export const gostergeNufusSayisiString: IGosterge<GostergeNufusSayisiDurumString
 export const gostergeNufusSayisiNumber: IGosterge<GostergeNufusSayisiDurumNumber> =
   {
     gostergeId: "4",
-    getBaslik: (durum) => (
-      <GostergeBasitBaslik
-        gostergeIsim={durum.isim ? durum.isim : "Gosterge"}
-        grafikTipi={durum.grafikTipi as GrafikTipi}
-      />
-    ),
+    getBaslik: (durum) => <GostergeBasitBaslik durum={durum} />,
     varsayilanDurum: { gosterilenNufus: undefined },
     getNode: (durum) => (
       <GostergeDataYukleyici
@@ -124,40 +113,33 @@ export const gostergeNufusSayisiNumber: IGosterge<GostergeNufusSayisiDurumNumber
       <GostergeDataYukleyici
         dataYukleAsync={() => getUlkeNufusNumberAsync(durum)}
         getNode={(data) => (
-          <GostergeDuzenle 
-            durum={durum} 
-            setDurum={setDurum} 
-            data={data} 
-          />
+          <GostergeDuzenle durum={durum} setDurum={setDurum} data={data} />
         )}
       />
     ),
   };
 
-  export const gostergeNufusSayisiGrafik: IGosterge<GostergeNufusSayisiDurumGrafik> = {
+export const gostergeNufusSayisiGrafik: IGosterge<GostergeNufusSayisiDurumGrafik> =
+  {
     gostergeId: "5",
-    getBaslik: (durum) => (
-      <GostergeBasitBaslik gostergeIsim={durum.isim ? durum.isim : "Gosterge"} grafikTipi={durum.grafikTipi as GrafikTipi}/>
-    ),
-    varsayilanDurum: { gosterilenUlkeler: undefined, grafikTipi: "bar", xEkseniVeriAnahtari : "ulke" },
+    getBaslik: (durum) => <GostergeBasitBaslik durum={durum} />,
+    varsayilanDurum: {
+      gosterilenUlkeler: undefined,
+      grafikTipi: "bar",
+      xEkseniVeriAnahtari: "ulke",
+    },
     getNode: (durum) => (
       <GostergeDataYukleyici
         dataYukleAsync={() => getUlkeNufusGrafikAsync(durum)}
         getNode={(data) => <GostergeIcerikOlustur data={data} durum={durum} />}
-        
       />
     ),
     getDuzenle: ({ durum, setDurum }) => (
       <GostergeDataYukleyici
         dataYukleAsync={() => getUlkeNufusGrafikAsync(durum)}
         getNode={(data) => (
-          <GostergeDuzenle 
-            durum={durum} 
-            setDurum={setDurum} 
-            data={data} 
-          />
+          <GostergeDuzenle durum={durum} setDurum={setDurum} data={data} />
         )}
       />
     ),
   };
-  

@@ -18,7 +18,11 @@ const GostergeKonteyner = ({
   const { message } = App.useApp();
   const suAnkiDurum = useRef(gosterge.varsayilanDurum);
 
-  const [baslik, setBaslik] = useState(gosterge.getBaslik ? gosterge.getBaslik(suAnkiDurum.current) : gosterge.varsayilanBaslik);
+  const [baslik, setBaslik] = useState(
+    gosterge.getBaslik 
+      ? gosterge.getBaslik(suAnkiDurum.current) 
+      : gosterge.varsayilanBaslik
+  );
   const [duzenleniyor, setDuzenleniyor] = useState(false);
   
   const [gostergeNode, setGostergeNode] = useState<ReactNode>(null);
@@ -26,36 +30,34 @@ const GostergeKonteyner = ({
 
   useEffect(() => {
     const getDurum = async () => {
-      if (gosterge.gostergeId) {
+      if (gosterge.gostergeId && gosterge.getDuzenle) {
         try {
           const r = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
-          
           if (r) {
             suAnkiDurum.current = JSON.parse(r);
+            setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
+            setDuzenlenenDurum(suAnkiDurum.current);
           } else {
-            suAnkiDurum.current = gosterge.varsayilanDurum;
+            setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
           }
-  
-          localStorage.removeItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
-  
-          setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
-          setDuzenlenenDurum(suAnkiDurum.current);
         } catch (error) {
           message.error('Gösterge ayar yüklenemedi');
-          suAnkiDurum.current = gosterge.varsayilanDurum;
           setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
         } 
       }
     };
-    
     getDurum();
   }, [gosterge, message]);
 
   useEffect(() => {
-    if (duzenleniyor) {
-      setGostergeNode(gosterge.getNode(duzenlenenDurum, null));
+    const guncelBaslik = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
+    if (guncelBaslik) {
+      const baslikDurum = JSON.parse(guncelBaslik);
+      if (gosterge.getBaslik) {
+        setBaslik(gosterge.getBaslik(baslikDurum));
+      }
     }
-  }, [duzenlenenDurum, duzenleniyor, gosterge]);
+  }, [duzenleniyor, gostergeNode]);
 
   const ustKisim = (
     <div className="ust-container">
@@ -107,6 +109,7 @@ const GostergeKonteyner = ({
       </div>
     </div>
   );
+
   let node: ReactNode = gostergeNode || <GostergeYukleyici />;
   if (duzenleniyor && gosterge.getDuzenle) {
     node = gosterge.getDuzenle({
@@ -120,9 +123,7 @@ const GostergeKonteyner = ({
       <div className="gosterge-ust">{ustKisim}</div>
       <div className="gosterge-icerik">
         <div className="gosterge-icerik-item">
-          <Card
-            style={{ height: "100%", border: "none" }}
-          >
+          <Card style={{ height: "100%", border: "none" }}>
             {node}
           </Card>
         </div>

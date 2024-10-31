@@ -7,6 +7,7 @@ export type GrafikTipi = "line" | "bar" | "area" | "composed" | "yok";
 
 export interface GostergeDurum {
   isim?: string;
+  gostergeId?: string;
   grafikTipi?: GrafikTipi;
   grafikCizimTipi?: Record<string, GrafikTipi>;
   xEkseniVeriAnahtari ?: string;
@@ -84,10 +85,6 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
   data: TData;
 }): ReactElement => {
   const [modalGorunurluk, setModalGorunurluk] = useState(false);
-
-  const modalKapat = () => {
-    setModalGorunurluk(false);
-  };
 
   const xEkseniAnahtar  = durum.xEkseniVeriAnahtari  || "ulke";
 
@@ -167,7 +164,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
       <Modal
         title="Detayları Gör"
         open={modalGorunurluk}
-        onCancel={modalKapat}
+        onCancel={() => setModalGorunurluk(false)}
       >
         <Typography>
           <pre>{JSON.stringify(data, null, 2)}</pre>

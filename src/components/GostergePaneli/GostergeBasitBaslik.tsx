@@ -1,17 +1,37 @@
 import { theme, Typography } from "antd";
 import { AiOutlineLineChart, AiOutlineBarChart, AiOutlineAreaChart } from "react-icons/ai"; 
-import { GrafikTipi } from "./GostergeIcerikOlustur";
+import { GostergeDurum } from "./GostergeIcerikOlustur";
 import { MdMultilineChart } from "react-icons/md";
 import { IoDocumentTextSharp } from "react-icons/io5";
 
-type Props = { gostergeIsim: string; grafikTipi: GrafikTipi };
+type Props<T extends GostergeDurum> = {
+  durum: T;
+};
 
-const GostergeBasitBaslik = ({ gostergeIsim, grafikTipi }: Props) => {
+const PANEL_PREFIX = 'panel_1_gosterge_';
+
+const GostergeBasitBaslik = <T extends GostergeDurum>({ durum }: Props<T>) => {
   const { useToken } = theme;
   const { token } = useToken();
 
+  // Function to retrieve custom name from localStorage
+  const gostergeIsminiGetir = () => {
+    if (durum.gostergeId) {
+      const savedPanelSettings = localStorage.getItem(`${PANEL_PREFIX}${durum.gostergeId}`);
+      if (savedPanelSettings) {
+        try {
+          const parsedSettings = JSON.parse(savedPanelSettings);
+          return parsedSettings.isim || durum.isim || "Gösterge";
+        } catch (error) {
+          console.error('Error parsing panel settings:', error);
+        }
+      }
+    }
+    return durum.isim || "Gösterge";
+  };
+
   const ikonGoster  = () => {
-    switch (grafikTipi) {
+    switch (durum.grafikTipi) {
       case 'line':
         return <AiOutlineLineChart size={18} style={{ marginRight: 8 }} />;
       case 'bar':
@@ -29,7 +49,7 @@ const GostergeBasitBaslik = ({ gostergeIsim, grafikTipi }: Props) => {
     <Typography.Text strong type="secondary">
       <div style={{ display: "flex", alignItems: "center", fontSize: 14 }}>
         {ikonGoster ()}
-        {gostergeIsim}
+        {gostergeIsminiGetir()}
       </div>
     </Typography.Text>
   );
