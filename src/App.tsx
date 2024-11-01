@@ -1,38 +1,18 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
 import GostergePaneli from "./components/GostergePaneli/GostergePaneli";
 import { gostergeNufusSayisiGrafik, gostergeNufusSayisiNumber, gostergeNufusSayisiString } from "./components/GostergePaneli/useGostergeleriYukle";
 import { IGosterge } from "./components/GostergePaneli/IGosterge";
-import { Button, Modal, Card, Space, Empty, Typography } from "antd";
+import { Button, Modal, Card, Space, Empty, Typography, Alert, Spin } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
+import { useKullaniciVerisiYukleyici } from "./components/GostergePaneli/useKullaniciVerisiYukle";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
   const [kullaniciId, setKullaniciId] = useState<number | null>(null);
   const [modalGorunurluk, setModalGorunurluk] = useState(false);
-  const [secilenGostergeler, setSecilenGostergeler] = useState<IGosterge<any>[]>([]);
-
-  // Kullanıcı verilerini yükle
-  useEffect(() => {
-    if (kullaniciId !== null) {
-      const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
-      if (kullaniciVerisi) {
-        try {
-          const { seciliGostergeler } = JSON.parse(kullaniciVerisi);
-          if (seciliGostergeler) {
-            const yuklenenGostergeler = varsayilanGostergeler
-              .map(item => item.gosterge)
-              .filter(gosterge => seciliGostergeler.includes(gosterge.gostergeId));
-            setSecilenGostergeler(yuklenenGostergeler);
-          }
-        } catch (error) {
-          console.error('Kullanıcı verisi yüklenirken hata oluştu:', error);
-        }
-      }
-    }
-  }, [kullaniciId]);
 
   const varsayilanGostergeler = useMemo(() => {
     return [
@@ -50,6 +30,34 @@ const App: React.FC = () => {
       },
     ];
   }, []);
+
+  const { 
+    secilenGostergeler, 
+    setSecilenGostergeler, 
+    yukleniyor, 
+    hata 
+  } = useKullaniciVerisiYukleyici(kullaniciId, varsayilanGostergeler);
+
+  if (yukleniyor) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" tip="Veriler yükleniyor..." />
+      </div>
+    );
+  }
+
+  if (hata) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Alert
+          message="Hata"
+          description={hata.message}
+          type="error"
+          showIcon
+        />
+      </div>
+    );
+  }
 
   const gostergeToggle = (gosterge: IGosterge<any>) => {
     if (kullaniciId === null) return;
