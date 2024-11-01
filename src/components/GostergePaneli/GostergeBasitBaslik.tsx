@@ -8,27 +8,9 @@ type Props<T extends GostergeDurum> = {
   durum: T;
 };
 
-const PANEL_PREFIX = 'panel_1_gosterge_';
-
 const GostergeBasitBaslik = <T extends GostergeDurum>({ durum }: Props<T>) => {
   const { useToken } = theme;
   const { token } = useToken();
-
-  // Function to retrieve custom name from localStorage
-  const gostergeIsminiGetir = () => {
-    if (durum.gostergeId) {
-      const savedPanelSettings = localStorage.getItem(`${PANEL_PREFIX}${durum.gostergeId}`);
-      if (savedPanelSettings) {
-        try {
-          const parsedSettings = JSON.parse(savedPanelSettings);
-          return parsedSettings.isim || durum.isim || "Gösterge";
-        } catch (error) {
-          console.error('Error parsing panel settings:', error);
-        }
-      }
-    }
-    return durum.isim || "Gösterge";
-  };
 
   const ikonGoster  = () => {
     switch (durum.grafikTipi) {
@@ -49,7 +31,7 @@ const GostergeBasitBaslik = <T extends GostergeDurum>({ durum }: Props<T>) => {
     <Typography.Text strong type="secondary">
       <div style={{ display: "flex", alignItems: "center", fontSize: 14 }}>
         {ikonGoster ()}
-        {gostergeIsminiGetir()}
+        {durum.isim ? durum.isim : "Gösterge"}
       </div>
     </Typography.Text>
   );

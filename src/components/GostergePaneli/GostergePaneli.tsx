@@ -9,14 +9,17 @@ const dragHandleSinifAdi = "gosterge-drag-handle";
 
 interface Props {
   gostergeler: IGosterge<any>[];
+  kullaniciId: number;
 }
 
-const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
+const GostergePaneli: React.FC<Props> = ({ gostergeler, kullaniciId }) => {
   const [layouts, setLayouts] = useState<Layouts>();
   const [yukleniyor, setYukleniyor] = useState(true);
 
   const onLayoutChange = useCallback(
     (currentLayout: Layout[], tumLayoutlar: Layouts) => {
+      if (!kullaniciId) return;
+
       setLayouts((oncekiLayout) => {
         const guncellenmisLayoutlar = { ...oncekiLayout };
 
@@ -37,20 +40,25 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
           );
         });
 
-        localStorage.setItem(
-          "kaydedilmisLayoutlar",
-          JSON.stringify(guncellenmisLayoutlar)
-        );
+        const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+        const mevcutVeri = kullaniciVerisi ? JSON.parse(kullaniciVerisi) : {};
+        
+        const yeniVeri = {
+          ...mevcutVeri,
+          kaydedilmisLayoutlar: guncellenmisLayoutlar
+        };
+
+        localStorage.setItem(`kullanici_${kullaniciId}`, JSON.stringify(yeniVeri));
 
         return guncellenmisLayoutlar;
       });
     },
-    []
+    [kullaniciId]
   );
 
   useEffect(() => {
     const layoutlarıYukle = () => {
-      const kaydedilmisLayoutlar = localStorage.getItem("kaydedilmisLayoutlar");
+      if (!kullaniciId) return;
 
       const varsayilanLayout: Layout[] = gostergeler.map((gosterge, index) => ({
         i: gosterge.gostergeId || `${index}`,
@@ -77,27 +85,25 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
         static: gosterge.varsayilanLayout?.static ?? false,
       }));
 
-      let varsayilanLayoutlar: Layouts;
-
-      if (kaydedilmisLayoutlar) {
+      const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+      let kaydedilmisLayoutlar = null;
+      
+      if (kullaniciVerisi) {
         try {
-          /* Eğer düzen en son kaydedildiğinden beri herhangi bir gösterge kaldırılmış veya 
-          yeni göstergeler eklenmişse, bu kontrol başarısız olacak ve kod varsayılan düzeni kullanacaktır. */
-          const parsedLayouts = JSON.parse(kaydedilmisLayoutlar);
+          const { kaydedilmisLayoutlar: savedLayouts } = JSON.parse(kullaniciVerisi);
           const mevcutIdler = new Set(gostergeler.map(g => g.gostergeId || ''));
-          const tumGostergelerMevcut = Object.values(parsedLayouts).every((breakpointLayout: any) =>
-            breakpointLayout.every((layout: Layout) => mevcutIdler.has(layout.i))
+          const tumGostergelerMevcut = Object.values(savedLayouts).every(
+            (breakpointLayout: any) =>
+              breakpointLayout.every((layout: Layout) => mevcutIdler.has(layout.i))
           );
 
-          varsayilanLayoutlar = tumGostergelerMevcut ? parsedLayouts : varsayilanLayoutOlustur(varsayilanLayout);
+          kaydedilmisLayoutlar = tumGostergelerMevcut ? savedLayouts : null;
         } catch (error) {
           console.error('Kaydedilen layoutları ayrıştırırken hata oluştu:', error);
-          varsayilanLayoutlar = varsayilanLayoutOlustur(varsayilanLayout);
         }
-      } else {
-        varsayilanLayoutlar = varsayilanLayoutOlustur(varsayilanLayout);
       }
 
+      const varsayilanLayoutlar = kaydedilmisLayoutlar || varsayilanLayoutOlustur(varsayilanLayout);
       setLayouts(varsayilanLayoutlar);
     };
 
@@ -111,7 +117,7 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
     layoutlarıYukle();
     const timer = setTimeout(() => setYukleniyor(false), 250);
     return () => clearTimeout(timer);
-  }, [gostergeler]);
+  }, [gostergeler, kullaniciId]);
 
   if (yukleniyor || !layouts) {
     return <Spin size="large" className="spin-layout" />;
@@ -138,6 +144,7 @@ const GostergePaneli: React.FC<Props> = ({ gostergeler }) => {
             <GostergeKonteyner
               gosterge={gosterge}
               dragHandleSinifAdi={dragHandleSinifAdi}
+              kullaniciId={kullaniciId}
             />
           </div>
         ))}

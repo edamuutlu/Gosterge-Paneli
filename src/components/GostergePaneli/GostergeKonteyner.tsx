@@ -10,60 +10,79 @@ import ButtonGroup from "antd/es/button/button-group";
 const GostergeKonteyner = ({
   gosterge,
   dragHandleSinifAdi,
+  kullaniciId,
 }: {
   panelId?: string;
   gosterge: IGosterge<any>;
   dragHandleSinifAdi: string;
+  kullaniciId: number;
 }) => {
   const { message } = App.useApp();
   const suAnkiDurum = useRef(gosterge.varsayilanDurum);
 
   const [baslik, setBaslik] = useState(
-    gosterge.getBaslik 
-      ? gosterge.getBaslik(suAnkiDurum.current) 
+    gosterge.getBaslik
+      ? gosterge.getBaslik(suAnkiDurum.current)
       : gosterge.varsayilanBaslik
   );
   const [duzenleniyor, setDuzenleniyor] = useState(false);
-  
+
   const [gostergeNode, setGostergeNode] = useState<ReactNode>(null);
   const [duzenlenenDurum, setDuzenlenenDurum] = useState<any>();
 
   useEffect(() => {
     const getDurum = async () => {
-      if (gosterge.gostergeId && gosterge.getDuzenle) {
+      if (gosterge.gostergeId && gosterge.getDuzenle && kullaniciId) {
         try {
-          const r = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
-          if (r) {
-            suAnkiDurum.current = JSON.parse(r);
-            setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
-            setDuzenlenenDurum(suAnkiDurum.current);
-          } else {
-            setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
+          const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+          if (kullaniciVerisi) {
+            const parsedVeri = JSON.parse(kullaniciVerisi);
+            const gostergeAyari = parsedVeri[`panel_1_gosterge_${gosterge.gostergeId}`];
+            
+            if (gostergeAyari) {
+              suAnkiDurum.current = gostergeAyari;
+              setGostergeNode(gosterge.getNode(suAnkiDurum.current, null));
+              setDuzenlenenDurum(suAnkiDurum.current);
+              
+              if (gosterge.getBaslik) {
+                setBaslik(gosterge.getBaslik(gostergeAyari));
+              }
+            } else {
+              setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
+            }
           }
         } catch (error) {
-          message.error('Gösterge ayar yüklenemedi');
+          console.error('Gösterge ayarları yüklenirken hata:', error);
+          message.error('Gösterge ayarları yüklenemedi');
           setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
-        } 
+        }
       }
     };
     getDurum();
-  }, [gosterge, message]);
+  }, [gosterge, kullaniciId, message]);
 
-  useEffect(() => {
-    const guncelBaslik = localStorage.getItem(`panel_${1}_gosterge_${gosterge.gostergeId}`);
-    if (guncelBaslik) {
-      const baslikDurum = JSON.parse(guncelBaslik);
-      if (gosterge.getBaslik) {
-        setBaslik(gosterge.getBaslik(baslikDurum));
+  const kaydetGostergeAyarlari = (yeniDurum: any) => {
+    if (gosterge.gostergeId && kullaniciId) {
+      try {
+        const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+        const mevcutVeri = kullaniciVerisi ? JSON.parse(kullaniciVerisi) : {};
+        
+        const yeniVeri = {
+          ...mevcutVeri,
+          [`panel_1_gosterge_${gosterge.gostergeId}`]: yeniDurum
+        };
+
+        localStorage.setItem(`kullanici_${kullaniciId}`, JSON.stringify(yeniVeri));
+      } catch (error) {
+        console.error('Gösterge ayarları kaydedilirken hata:', error);
+        message.error('Gösterge ayarları kaydedilemedi');
       }
     }
-  }, [duzenleniyor, gostergeNode]);
+  };
 
   const ustKisim = (
     <div className="ust-container">
-      <div className={`${dragHandleSinifAdi} ust-baslik`}>
-          {baslik}
-      </div>
+      <div className={`${dragHandleSinifAdi} ust-baslik`}>{baslik}</div>
       <div className="gosterge-butonlar">
         {gosterge.getDuzenle && (
           <>
@@ -74,35 +93,31 @@ const GostergeKonteyner = ({
                   setDuzenleniyor(true);
                 }}
                 type="link"
-                icon={<FiEdit size={24}/>}
+                icon={<FiEdit size={24} />}
               />
             ) : (
-                <ButtonGroup>
-                  <Button
-                    title="İptal"
-                    onClick={() => setDuzenleniyor(false)}
-                    type="link"
-                    icon={<BiArrowBack size={24}/>}
-                  />
-                  <Button
-                    title="Kaydet"
-                    onClick={() => {
-                      setDuzenleniyor(false);
-                      setGostergeNode(gosterge.getNode(duzenlenenDurum, suAnkiDurum.current));
-                      suAnkiDurum.current = duzenlenenDurum;
-                      if (gosterge.getBaslik) setBaslik(gosterge.getBaslik(suAnkiDurum.current));
-                     
-                      if (gosterge.gostergeId) {
-                        localStorage.setItem(
-                          `panel_${1}_gosterge_${gosterge.gostergeId}`,
-                          JSON.stringify(suAnkiDurum.current)
-                        );
-                      }
-                    }}
-                    type="link"
-                    icon={<MdSave size={24}/>}
-                  />
-                </ButtonGroup>
+              <ButtonGroup>
+                <Button
+                  title="İptal"
+                  onClick={() => setDuzenleniyor(false)}
+                  type="link"
+                  icon={<BiArrowBack size={24} />}
+                />
+                <Button
+                  title="Kaydet"
+                  onClick={() => {
+                    setDuzenleniyor(false);
+                    setGostergeNode(gosterge.getNode(duzenlenenDurum, suAnkiDurum.current));
+                    suAnkiDurum.current = duzenlenenDurum;
+                    if (gosterge.getBaslik) {
+                      setBaslik(gosterge.getBaslik(suAnkiDurum.current));
+                    }
+                    kaydetGostergeAyarlari(duzenlenenDurum);
+                  }}
+                  type="link"
+                  icon={<MdSave size={24} />}
+                />
+              </ButtonGroup>
             )}
           </>
         )}
@@ -123,9 +138,7 @@ const GostergeKonteyner = ({
       <div className="gosterge-ust">{ustKisim}</div>
       <div className="gosterge-icerik">
         <div className="gosterge-icerik-item">
-          <Card style={{ height: "100%", border: "none" }}>
-            {node}
-          </Card>
+          <Card style={{ height: "100%", border: "none" }}>{node}</Card>
         </div>
       </div>
     </div>

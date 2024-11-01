@@ -7,28 +7,32 @@ import { IGosterge } from "./components/GostergePaneli/IGosterge";
 import { Button, Modal, Card, Space, Empty, Typography } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
-
-const SECILI_GOSTERGE_ANAHTARLARI = 'seciliGostergeler';
-const PANEL_PREFIX = 'panel_1_gosterge_';
+const { Title, Text } = Typography;
 
 const App: React.FC = () => {
+  const [kullaniciId, setKullaniciId] = useState<number | null>(null);
   const [modalGorunurluk, setModalGorunurluk] = useState(false);
   const [secilenGostergeler, setSecilenGostergeler] = useState<IGosterge<any>[]>([]);
 
+  // Kullanıcı verilerini yükle
   useEffect(() => {
-    const kayitliGostergeler = localStorage.getItem(SECILI_GOSTERGE_ANAHTARLARI);
-    if (kayitliGostergeler) {
-      try {
-        const gostergeIdleri = JSON.parse(kayitliGostergeler);
-        const yuklenenGostergeler = varsayilanGostergeler
-          .map(item => item.gosterge)
-          .filter(gosterge => gostergeIdleri.includes(gosterge.gostergeId));
-        setSecilenGostergeler(yuklenenGostergeler);
-      } catch (error) {
-        console.error('Gösterge yüklenirken bir hata oluştu:', error);
+    if (kullaniciId !== null) {
+      const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+      if (kullaniciVerisi) {
+        try {
+          const { seciliGostergeler } = JSON.parse(kullaniciVerisi);
+          if (seciliGostergeler) {
+            const yuklenenGostergeler = varsayilanGostergeler
+              .map(item => item.gosterge)
+              .filter(gosterge => seciliGostergeler.includes(gosterge.gostergeId));
+            setSecilenGostergeler(yuklenenGostergeler);
+          }
+        } catch (error) {
+          console.error('Kullanıcı verisi yüklenirken hata oluştu:', error);
+        }
       }
     }
-  }, []);
+  }, [kullaniciId]);
 
   const varsayilanGostergeler = useMemo(() => {
     return [
@@ -48,64 +52,108 @@ const App: React.FC = () => {
   }, []);
 
   const gostergeToggle = (gosterge: IGosterge<any>) => {
-    setSecilenGostergeler((prev) => {
-      const gostergeVarMi = prev.some((g) => g === gosterge);
-      const yeniGostergeler = gostergeVarMi
-        ? prev.filter((g) => g !== gosterge)
-        : [...prev, gosterge];
+    if (kullaniciId === null) return;
 
-      const gostergeIdleri = yeniGostergeler.map(g => g.gostergeId).filter(Boolean);
-      localStorage.setItem(SECILI_GOSTERGE_ANAHTARLARI, JSON.stringify(gostergeIdleri));
+    const gostergeVarMi = secilenGostergeler.some((g) => g.gostergeId === gosterge.gostergeId);
+    let yeniGostergeler: IGosterge<any>[];
 
-      if (gostergeVarMi && gosterge.gostergeId) {
-        localStorage.removeItem(`${PANEL_PREFIX}${gosterge.gostergeId}`);
-      }
+    if (gostergeVarMi) {
+      yeniGostergeler = secilenGostergeler.filter((g) => g.gostergeId !== gosterge.gostergeId);
+    } else {
+      yeniGostergeler = [...secilenGostergeler, gosterge];
+    }
 
-      return yeniGostergeler;
-    });
+    setSecilenGostergeler(yeniGostergeler);
+
+    const kullaniciVerisi = localStorage.getItem(`kullanici_${kullaniciId}`);
+    const mevcutVeri = kullaniciVerisi ? JSON.parse(kullaniciVerisi) : {};
+    
+    const yeniVeri = {
+      ...mevcutVeri,
+      seciliGostergeler: yeniGostergeler.map(g => g.gostergeId)
+    };
+
+    // Eğer gösterge kaldırılıyorsa, ilgili panel verilerini de temizle
+    if (gostergeVarMi && gosterge.gostergeId) {
+      delete yeniVeri[`panel_1_gosterge_${gosterge.gostergeId}`];
+    }
+
+    localStorage.setItem(`kullanici_${kullaniciId}`, JSON.stringify(yeniVeri));
   };
 
   const gostergeSecildiMi = (gosterge: IGosterge<any>) => {
-    return secilenGostergeler.some((selected) => selected === gosterge);
+    return secilenGostergeler.some((selected) => selected.gostergeId === gosterge.gostergeId);
+  };
+
+  const KullaniciGiris = (id: number) => {
+    const storageKey = `kullanici_${id}`;
+    const mevcutVeri = localStorage.getItem(storageKey);
+    
+    if (!mevcutVeri) {
+      const kullaniciVerisi = {
+        seciliGostergeler: [],
+        kaydedilmisLayoutlar: {},
+      };
+      localStorage.setItem(storageKey, JSON.stringify(kullaniciVerisi));
+    }
+    
+    setKullaniciId(id);
   };
 
   return (
     <div>
-      {secilenGostergeler.length > 0 ? (
-        <>
-          <Button
-            type="primary"
-            onClick={() => setModalGorunurluk(true)}
-            style={{ margin: "16px 16px 0px 10px" }}
-          >
-            <IoSettingsSharp size={12}/>
-            Gösterge Ayarlar
-          </Button>
-          <GostergePaneli 
-            gostergeler={secilenGostergeler}
-          />
-        </>
-      ) : (
-        <div style={{ margin: "200px auto" }}>
-          <Empty
-            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-            imageStyle={{ height: 100 }}
-            description={
-              <Typography.Text>Gösterge bulunmamaktadır.</Typography.Text>
-            }
-          >
+      {kullaniciId !== null ? (
+        secilenGostergeler.length > 0 ? (
+          <>
             <Button
               type="primary"
               onClick={() => setModalGorunurluk(true)}
               style={{ margin: "16px 16px 0px 10px" }}
             >
-              <FaPlus size={12}/>
-              Gösterge Ekle
+              <IoSettingsSharp size={12}/>
+              Gösterge Ayarlar
             </Button>
-          </Empty>
+            <GostergePaneli 
+              gostergeler={secilenGostergeler}
+              kullaniciId={kullaniciId}
+            />
+          </>
+        ) : (
+          <div style={{ margin: "200px auto" }}>
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{ height: 100 }}
+              description={
+                <Typography.Text>Gösterge bulunmamaktadır.</Typography.Text>
+              }
+            >
+              <Button
+                type="primary"
+                onClick={() => setModalGorunurluk(true)}
+                style={{ margin: "16px 16px 0px 10px" }}
+              >
+                <FaPlus size={12}/>
+                Gösterge Ekle
+              </Button>
+            </Empty>
+          </div>
+        )
+      ) : (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <Card
+            style={{ width: 300, textAlign: "center" }}
+            bordered={true}
+          >
+            <Title level={4}>Kullanıcı Girişi Yok</Title>
+            <Text>Devam etmek için lütfen giriş yapın.</Text>
+            <div style={{ marginTop: 16 }}>
+              <Button type="primary" onClick={() => KullaniciGiris(1)}>
+                Giriş Yap
+              </Button>
+            </div>
+          </Card>
         </div>
       )}
-      
       <Modal
         title="Gösterge Seçimi"
         footer={null}
