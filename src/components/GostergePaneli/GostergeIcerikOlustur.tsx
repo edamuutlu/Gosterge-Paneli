@@ -3,13 +3,10 @@ import { ResponsiveContainer, ComposedChart, Line, Bar, Area, CartesianGrid, XAx
   Legend, TooltipProps, DefaultTooltipContent} from "recharts";
 import { Alert, Button, message, Modal, Typography } from "antd";
 
-export type GrafikTipi = "line" | "bar" | "area" | "composed" | "yok";
-
 export interface GostergeDurum {
   isim?: string;
-  gostergeId?: string;
-  grafikTipi?: GrafikTipi;
-  grafikCizimTipi?: Record<string, GrafikTipi>;
+  grafikTipi?: string;
+  grafikCizimTipi?: Record<string, string>;
   xEkseniVeriAnahtari ?: string;
 }
 
@@ -58,10 +55,6 @@ const CustomToolTip = ({
     return null;
   }
 
-  const modalGoster = () => {
-    setModalGorunurluk(true);
-  };
-
   return (
     <div className="custom-tooltip">
       <DefaultTooltipContent
@@ -70,7 +63,7 @@ const CustomToolTip = ({
         payload={payload}
         label={label}
       />
-      <Button type="primary" onClick={modalGoster}>
+      <Button type="primary" onClick={() => setModalGorunurluk(true)}>
         Detayları Gör
       </Button>
     </div>
@@ -86,11 +79,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
 }): ReactElement => {
   const [modalGorunurluk, setModalGorunurluk] = useState(false);
 
-  const xEkseniAnahtar  = durum.xEkseniVeriAnahtari  || "ulke";
-
-  if (!durum.isim) {
-    durum.isim = "Gosterge";
-  }
+  const xEkseniAnahtar  = durum.xEkseniVeriAnahtari;
 
   if (!data) {
     return (
@@ -101,6 +90,10 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
         showIcon
       />
     );
+  }
+
+  if (!durum.isim) {
+    durum.isim = "Gosterge";
   }
 
   if (!durum.grafikTipi) {
@@ -122,21 +115,14 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
     ? Object.keys(data[0]).filter((key) => key !== xEkseniAnahtar  && typeof data[0][key] !== 'string')
     : [];
 
-  const children =
-    durum.grafikTipi === "composed"
-      ? dataKeys.map((key, index) => {
-          const grafikTipi = durum.grafikCizimTipi?.[key] || "line"; 
-          const grafikComponent =
-            grafikKomponentleri[grafikTipi as keyof typeof grafikKomponentleri];
-          return grafikComponent ? grafikComponent(key, index) : null;
-        })
-      : dataKeys.map((key, index) => {
-          const grafikComponent =
-            grafikKomponentleri[
-              durum.grafikTipi as keyof typeof grafikKomponentleri
-            ];
-          return grafikComponent ? grafikComponent(key, index) : null;
-        });
+    const children = dataKeys.map((key, index) => {
+      const grafikTipi = durum.grafikTipi === "composed" 
+        ? (durum.grafikCizimTipi?.[key] || "line")
+        : durum.grafikTipi;
+        
+      const grafikComponent = grafikKomponentleri[grafikTipi as keyof typeof grafikKomponentleri];
+      return grafikComponent ? grafikComponent(key, index) : null;
+    });
 
   return (
     <>

@@ -2,12 +2,9 @@ import GostergeBasitBaslik from "./GostergeBasitBaslik";
 import { IGosterge } from "./IGosterge";
 import GostergeDuzenle from "./GostergeDuzenle";
 import { ReactNode, useEffect, useState } from "react";
-import {
-  GostergeDurum,
-  GostergeIcerikOlustur,
-} from "./GostergeIcerikOlustur";
+import { GostergeDurum, GostergeIcerikOlustur } from "./GostergeIcerikOlustur";
 
-type Ulkeler = {
+type Ulke = {
   ulkeIsmi: string;
   nufus: number;
 };
@@ -56,7 +53,7 @@ const getUlkeNufusNumberAsync = async (
 };
 
 type GostergeNufusSayisiDurumGrafik = GostergeDurum & {
-  gosterilenUlkeler?: Ulkeler[];
+  gosterilenUlkeler?: Ulke[];
 };
 
 const getUlkeNufusGrafikAsync = async (
@@ -65,15 +62,6 @@ const getUlkeNufusGrafikAsync = async (
   return [
     { ulke: "Türkiye", kita: "Avrupa", dogum: 5000, olum: 2020 },
     { ulke: "Suriye", kita: "Asya", dogum: 2500, olum: 1900 },
-  ];
-};
-
-const getUlkeNufusGrafikAsync2 = async (
-  filtre: GostergeNufusSayisiDurumGrafik
-) => {
-  return [
-    { ulke: "Türkiye", nufus: 1000 },
-    { ulke: "Suriye", nufus: 2400 },
   ];
 };
 

@@ -53,7 +53,6 @@ const GostergeKonteyner = ({
           }
         } catch (error) {
           console.error('Gösterge ayarları yüklenirken hata:', error);
-          message.error('Gösterge ayarları yüklenemedi');
           setGostergeNode(gosterge.getNode(gosterge.varsayilanDurum, null));
         }
       }
@@ -75,7 +74,6 @@ const GostergeKonteyner = ({
         localStorage.setItem(`kullanici_${kullaniciId}`, JSON.stringify(yeniVeri));
       } catch (error) {
         console.error('Gösterge ayarları kaydedilirken hata:', error);
-        message.error('Gösterge ayarları kaydedilemedi');
       }
     }
   };

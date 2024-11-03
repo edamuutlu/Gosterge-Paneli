@@ -16,17 +16,16 @@ const GostergeDuzenle = <T extends GostergeDurum>({
   data,
 }: GostergeDuzenleProps<T>): ReactElement => {
   const grafikVarMi = "grafikTipi" in durum && durum.grafikTipi !== "yok";
-  const sayisalAnahtarlar = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "number") : [];
-  const karmaGrafikMi = sayisalAnahtarlar.length >= 2;
-  const xEkseniAnahtarlar = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "string") : [];
+  const yEkseniAnahtarlari = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "number") : [];
+  const xEkseniAnahtarlari = data?.length > 0 ? Object.keys(data[0]).filter(key => typeof data[0][key] === "string") : [];
 
   const grafikTipiDegistir = (yeniTip: string) => {
     if (!grafikVarMi) return;
     
     // Geçerli x ekseni anahtarı yoksa, ilk string anahtarı kullan
-    const yeniXAxisDataKey = xEkseniAnahtarlar.includes(durum.xEkseniVeriAnahtari!) 
+    const yeniXAxisDataKey = xEkseniAnahtarlari.includes(durum.xEkseniVeriAnahtari!) 
       ? durum.xEkseniVeriAnahtari 
-      : xEkseniAnahtarlar[0] || "";
+      : xEkseniAnahtarlari[0] || "";
 
     setDurum({ 
       ...durum, 
@@ -56,7 +55,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
                   onChange={(yeniKey) => setDurum({ ...durum, xEkseniVeriAnahtari: yeniKey })}
                   style={{ width: "100%" }}
                 >
-                  {xEkseniAnahtarlar.map((key) => (
+                  {xEkseniAnahtarlari.map((key) => (
                     <Option key={key} value={key}>{key}</Option>
                   ))}
                 </Select>
@@ -71,14 +70,14 @@ const GostergeDuzenle = <T extends GostergeDurum>({
                   <Option value="bar">Bar Grafik</Option>
                   <Option value="line">Çizgi Grafik</Option>
                   <Option value="area">Alan Grafik</Option>
-                  {karmaGrafikMi && <Option value="composed">Karma Grafik</Option>}
+                  {durum.grafikTipi === "composed" && <Option value="composed">Karma Grafik</Option>}
                 </Select>
               </Form.Item>
 
               {durum.grafikTipi === "composed" && (
                 <Card size="small" title="Grafik Bileşenleri" style={{ marginTop: 16 }}>
                   <Space direction="vertical" style={{ width: "100%" }} size="middle">
-                    {sayisalAnahtarlar.map((key) => (
+                    {yEkseniAnahtarlari.map((key) => (
                       <Form.Item key={key} label={`${key} için Grafik Tipi`} required>
                         <Select
                           value={durum.grafikCizimTipi?.[key] || "line"}
