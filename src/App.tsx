@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 const App: React.FC = () => {
   const [kullaniciId, setKullaniciId] = useState<number | null>(null);
 
-  const KullaniciGiris = (id: number) => {
+  const kullaniciGiris = (id: number) => {
     const mevcutVeri = localStorage.getItem(`kullanici_${id}`);
     
     if (!mevcutVeri) {
@@ -32,7 +32,7 @@ const App: React.FC = () => {
           <Title level={4}>Kullanıcı Girişi Yok</Title>
           <Text>Devam etmek için lütfen giriş yapın.</Text>
           <div style={{ marginTop: 16 }}>
-            <Button type="primary" onClick={() => KullaniciGiris(1)}>
+            <Button type="primary" onClick={() => kullaniciGiris(1)}>
               Giriş Yap
             </Button>
           </div>

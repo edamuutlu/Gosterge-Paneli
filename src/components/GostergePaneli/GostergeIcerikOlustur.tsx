@@ -79,8 +79,6 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
 }): ReactElement => {
   const [modalGorunurluk, setModalGorunurluk] = useState(false);
 
-  const xEkseniAnahtar  = durum.xEkseniVeriAnahtari;
-
   if (!data) {
     return (
       <Alert
@@ -112,7 +110,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
 
   const dataKeys =
   data && Array.isArray(data) && data.length > 0
-    ? Object.keys(data[0]).filter((key) => key !== xEkseniAnahtar  && typeof data[0][key] !== 'string')
+    ? Object.keys(data[0]).filter((key) => key !== durum.xEkseniVeriAnahtari  && typeof data[0][key] !== 'string')
     : [];
 
     const children = dataKeys.map((key, index) => {
@@ -132,7 +130,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
           margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
         >
           <CartesianGrid stroke="#f5f5f5" />
-          <XAxis dataKey={xEkseniAnahtar } />
+          <XAxis dataKey={durum.xEkseniVeriAnahtari } />
           <YAxis />
           <Tooltip
             content={<CustomToolTip setModalGorunurluk={setModalGorunurluk} />}

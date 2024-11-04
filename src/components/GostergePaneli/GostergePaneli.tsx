@@ -53,15 +53,11 @@ const GostergePaneli = ({ kullaniciId }: { kullaniciId: number }) => {
   }, [kullaniciId, varsayilanGostergeler]);
 
   const gostergeToggle = (gosterge: IGosterge<any>) => {
-    const gostergeVarMi = secilenGostergeler.some(
-      (g) => g.gostergeId === gosterge.gostergeId
-    );
+    const gostergeVarMi = secilenGostergeler.some((g) => g.gostergeId === gosterge.gostergeId);
     let yeniGostergeler: IGosterge<any>[];
 
     if (gostergeVarMi) {
-      yeniGostergeler = secilenGostergeler.filter(
-        (g) => g.gostergeId !== gosterge.gostergeId
-      );
+      yeniGostergeler = secilenGostergeler.filter((g) => g.gostergeId !== gosterge.gostergeId);
     } else {
       yeniGostergeler = [...secilenGostergeler, gosterge];
     }
