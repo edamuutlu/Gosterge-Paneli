@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { Form, Input, Select, Card, Space } from "antd";
-import { GostergeDurum } from "./GostergeIcerikOlustur";
+import { GostergeDurum } from "./GostergeGrafikIcerikOlustur";
 
 const { Option } = Select;
 
@@ -34,6 +34,9 @@ const GostergeDuzenle = <T extends GostergeDurum>({
       xEkseniVeriAnahtari: yeniXAxisDataKey 
     });
   };
+
+  console.log('yEkseniAnahtarlari :>> ', yEkseniAnahtarlari);
+  console.log('durum.grafikTipi :>> ', durum.grafikTipi);
 
   return (
     <Card>
@@ -70,7 +73,7 @@ const GostergeDuzenle = <T extends GostergeDurum>({
                   <Option value="bar">Bar Grafik</Option>
                   <Option value="line">Çizgi Grafik</Option>
                   <Option value="area">Alan Grafik</Option>
-                  {durum.grafikTipi === "composed" && <Option value="composed">Karma Grafik</Option>}
+                  {yEkseniAnahtarlari.length>=2 && <Option value="composed">Karma Grafik</Option>}
                 </Select>
               </Form.Item>
 

@@ -70,7 +70,7 @@ const CustomToolTip = ({
   );
 };
 
-export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
+export const GostergeGrafikIcerikOlustur = <T extends GostergeDurum, TData>({
   durum,
   data,
 }: {
@@ -93,21 +93,7 @@ export const GostergeIcerikOlustur = <T extends GostergeDurum, TData>({
   if (!durum.isim) {
     durum.isim = "Gosterge";
   }
-
-  if (!durum.grafikTipi) {
-    durum.grafikTipi = "yok";
-  }
-
-  if (durum.grafikTipi === "yok") {
-    return (
-      <div>
-        <Typography>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </Typography>
-      </div>
-    );
-  }
-
+  
   const dataKeys =
   data && Array.isArray(data) && data.length > 0
     ? Object.keys(data[0]).filter((key) => key !== durum.xEkseniVeriAnahtari  && typeof data[0][key] !== 'string')

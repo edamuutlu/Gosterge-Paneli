@@ -1,6 +1,6 @@
 import { theme, Typography } from "antd";
 import { AiOutlineLineChart, AiOutlineBarChart, AiOutlineAreaChart } from "react-icons/ai"; 
-import { GostergeDurum } from "./GostergeIcerikOlustur";
+import { GostergeDurum } from "./GostergeGrafikIcerikOlustur";
 import { MdMultilineChart } from "react-icons/md";
 import { IoDocumentTextSharp } from "react-icons/io5";
 
