@@ -5,7 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import GostergeKonteyner from "./GostergeKonteyner";
 import { IGosterge } from "./IGosterge";
-import { gostergeNufusSayisiGrafik, gostergeNufusSayisiNumber, gostergeNufusSayisiString } from "./useGostergeleriYukle";
+import { gostergeGrafik, gostergeSayi, gostergeMetin } from "./useGostergeleriYukle";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 const dragHandleSinifAdi = "gosterge-drag-handle";
@@ -19,16 +19,16 @@ const GostergePaneli = ({ kullaniciId }: { kullaniciId: number }) => {
   const varsayilanGostergeler = useMemo(() => {
     return [
       {
-        title: "Ülke İsmi (String)",
-        gosterge: gostergeNufusSayisiString,
+        title: "Ülke İsmi",
+        gosterge: gostergeMetin,
       },
       {
-        title: "Nüfus Sayısı (Number)",
-        gosterge: gostergeNufusSayisiNumber,
+        title: "Nüfus Sayısı",
+        gosterge: gostergeSayi,
       },
       {
-        title: "Nüfus Dağılımı (Grafik)",
-        gosterge: gostergeNufusSayisiGrafik,
+        title: "Nüfus Dağılımı Grafiği",
+        gosterge: gostergeGrafik,
       },
     ];
   }, []);

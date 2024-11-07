@@ -1,12 +1,8 @@
 import { ReactElement } from "react";
 import { Alert, Typography } from "antd";
+import { GostergeMetinDurum } from "./useGostergeleriYukle";
 
-interface GostergeDurum {
-  isim?: string;
-  xEkseniVeriAnahtari?: string;
-}
-
-export const GostergeMetinIcerikOlustur = <T extends GostergeDurum, TData>({
+export const GostergeMetinIcerikOlustur = <T extends GostergeMetinDurum, TData>({
   durum,
   data,
 }: {
@@ -23,7 +19,7 @@ export const GostergeMetinIcerikOlustur = <T extends GostergeDurum, TData>({
       />
     );
   }
-
+  
   if (!durum.isim) {
     durum.isim = "Gosterge";
   }

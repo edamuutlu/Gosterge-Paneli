@@ -2,13 +2,7 @@ import { ReactElement, useState } from "react";
 import { ResponsiveContainer, ComposedChart, Line, Bar, Area, CartesianGrid, XAxis, YAxis, Tooltip, 
   Legend, TooltipProps, DefaultTooltipContent} from "recharts";
 import { Alert, Button, message, Modal, Typography } from "antd";
-
-export interface GostergeDurum {
-  isim?: string;
-  grafikTipi?: string;
-  grafikCizimTipi?: Record<string, string>;
-  xEkseniVeriAnahtari ?: string;
-}
+import { GostergeGrafikDurum } from "./useGostergeleriYukle";
 
 const varsayilanRenkler  = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#387908"];
 
@@ -70,7 +64,7 @@ const CustomToolTip = ({
   );
 };
 
-export const GostergeGrafikIcerikOlustur = <T extends GostergeDurum, TData>({
+export const GostergeGrafikIcerikOlustur = <T extends GostergeGrafikDurum, TData>({
   durum,
   data,
 }: {

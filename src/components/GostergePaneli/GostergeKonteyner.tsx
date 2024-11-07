@@ -6,6 +6,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { MdSave } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import ButtonGroup from "antd/es/button/button-group";
+import GostergeBasitBaslik from "./GostergeBasitBaslik";
 
 const GostergeKonteyner = ({
   gosterge,
@@ -80,7 +81,9 @@ const GostergeKonteyner = ({
 
   const ustKisim = (
     <div className="ust-container">
-      <div className={`${dragHandleSinifAdi} ust-baslik`}>{baslik}</div>
+      <div className={`${dragHandleSinifAdi} ust-baslik`}>
+        {typeof baslik === 'string' ? <GostergeBasitBaslik>{baslik}</GostergeBasitBaslik> : baslik}
+      </div>
       <div className="gosterge-butonlar">
         {gosterge.getDuzenle && (
           <>
